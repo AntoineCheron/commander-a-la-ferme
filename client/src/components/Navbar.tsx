@@ -2,7 +2,6 @@ import React, { FunctionComponent } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import {
-  LoginOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
   ReconciliationOutlined
@@ -15,8 +14,8 @@ const Navbar: FunctionComponent<{}> = () => {
   const current = window.location.pathname.slice(1) || 'commandes'
 
   return (
-    <Header style={{ background: 'white', padding: 0 }}>
-      <Menu selectedKeys={[current]} mode='horizontal' onClick={e => history.push(`/${e.key}`)}>
+    <Header style={{ background: 'white' }}>
+      <Menu selectedKeys={[current]} mode='horizontal' onClick={e => history.push(`/${e.key}`)} style={{ display: 'flex', justifyContent: 'center' }}>
 
         <Menu.Item key='commandes'>
           <ShoppingCartOutlined /> Commandes
@@ -25,10 +24,6 @@ const Navbar: FunctionComponent<{}> = () => {
         <Menu.Item key='stock'>
           <ReconciliationOutlined /> Stock
         </Menu.Item>
-
-        <Menu.Item key='login'>
-          <LoginOutlined /> Se connecter
-          </Menu.Item>
 
         <Menu.Item key='logout'>
           <LogoutOutlined /> Se déconnecter

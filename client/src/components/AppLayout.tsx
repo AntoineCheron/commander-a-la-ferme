@@ -8,7 +8,7 @@ const { Content } = Layout
 const AppLayout: FunctionComponent<{}> = ({ children }) =>
   <Layout>
     <Navbar />
-    <Content>
+    <Content style={{ padding: '30px 50px' }}>
       {children}
     </Content>
   </Layout>
