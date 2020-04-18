@@ -1,10 +1,11 @@
 import React, { FunctionComponent } from 'react'
 
+import AppLayout from '../components/AppLayout'
+
 const OrdersPage: FunctionComponent<{}> = () => {
-  return (<>
+  return (<AppLayout>
     <h1>Orders</h1>
-    <p>In progres...</p>
-  </>)
+  </AppLayout>)
 }
 
 export default OrdersPage
