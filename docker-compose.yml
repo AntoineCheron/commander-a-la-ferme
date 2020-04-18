@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:12
+    restart: always
+    volumes:
+      - /db/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: pass
+  application:
+    image: antoinecheron/sycoea
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/usr/src/app/src
