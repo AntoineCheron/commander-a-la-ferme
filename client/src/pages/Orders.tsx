@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { Route, RouteComponentProps, Switch, useHistory, useParams, Redirect } from 'react-router-dom'
+import { Route, RouteComponentProps, Switch, useHistory, Redirect } from 'react-router-dom'
 import { Radio, Typography } from 'antd'
 
 import AppLayout from '../components/AppLayout'
@@ -37,9 +37,9 @@ const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }>
   const filteredOrders = orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
 
   const handleModeChange = (e: RadioChangeEvent) => {
-    const targetUrl = e.target.value === 'todo' ? '/commandes/a-preparer'
-      : e.target.value === 'done' ? '/commandes/terminees'
-        : '/commandes/toutes'
+    const targetUrl = e.target.value === 'todo' ? '/app/commandes/a-preparer'
+      : e.target.value === 'done' ? '/app/commandes/terminees'
+        : '/app/commandes/toutes'
     history.push(targetUrl)
   }
 

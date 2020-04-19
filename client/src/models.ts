@@ -1,8 +1,20 @@
+export type Farm = {
+  name: string
+  telephone: string
+  address: string
+  description: string
+  paymentMethods: PaymentMethod[]
+  inventory: InventoryItem[]
+}
+
+export type PaymentMethod = 'Carte Bancaire' | 'Espèces' | 'Chèque'
+
 export type InventoryItem = BaseInventoryItem & {
   remaining: number
   ordered: number
 }
 
+export type OrderableItem = OrderedItem & { remaining: number }
 export type OrderedItem = BaseInventoryItem & { amount: number }
 
 export type BaseInventoryItem = {
@@ -32,4 +44,10 @@ export const statusColor = {
   'in-progress': '',
   completed: '#87d068',
   canceled: '#108ee9'
+}
+
+export type User = {
+  id: string
+  username: string
+  farmName: string
 }

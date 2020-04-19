@@ -50,7 +50,7 @@ const OrdersList: FunctionComponent<OrdersListProps> = ({ orders }) => {
       key: 'action',
       render: (text: any, record: Order) => (
         <span>
-          <Button onClick={() => history.push(`/commande/${record.id}`)}>Voir les details</Button>
+          <Button onClick={() => history.push(`/app/commande/${record.id}`)}>Voir les details</Button>
         </span>
       ),
     },

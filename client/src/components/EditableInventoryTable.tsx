@@ -25,7 +25,7 @@ const EditableInventoryTable: FunctionComponent<InventoryProps> = ({ items, edit
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await form.validateFields()) as InventoryItem;
+      const row = (await form.validateFields()) as InventoryItem
       editItem(key as string, row)
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo)

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Button, Result, Typography } from 'antd'
+import { Button, Result } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 
 import AppLayout from '../components/AppLayout'
