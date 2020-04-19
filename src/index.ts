@@ -1,4 +1,5 @@
 import express from 'express'
+import path from 'path'
 // import morgan from 'morgan'
 
 import restApi from './rest-api'
@@ -9,8 +10,13 @@ const app = express()
 
 // app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 app.use(express.json())
-app.use(restApi)
+
+app.use('/api', restApi)
+app.use(express.static(path.join(__dirname, '../client/build')))
+app.get('*', (_, res) =>
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'))
+)
 
 app.listen(PORT, function () {
-  console.log(`We have started our server on port ${PORT}`)
+  console.log(`Server started on port ${PORT}`)
 })
