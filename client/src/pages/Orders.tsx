@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from 'react'
-import { Route, RouteComponentProps, Switch, useHistory } from 'react-router-dom'
+import { Route, RouteComponentProps, Switch, useHistory, useParams, Redirect } from 'react-router-dom'
 import { Radio, Typography } from 'antd'
 
 import AppLayout from '../components/AppLayout'
 import OrdersList from '../components/OrdersList'
-import { Order } from '../models'
 import { RadioChangeEvent } from 'antd/lib/radio'
+import OrderService from '../services/OrderService'
 
 const { Title } = Typography
 
@@ -26,12 +26,14 @@ const OrdersPage: FunctionComponent<RouteComponentProps> = ({ match }) => {
           <Orders activeKey="all" />
         </Route>
 
+        <Route path={`${match.url}`} ><Redirect to={`${match.url}`} /></Route>
       </Switch>
     </AppLayout>)
 }
 
 const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }> = ({ statusFilter, activeKey }) => {
   const history = useHistory()
+  const orders = OrderService.getAll()
   const filteredOrders = orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
 
   const handleModeChange = (e: RadioChangeEvent) => {
@@ -50,56 +52,5 @@ const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }>
     <OrdersList orders={filteredOrders} />
   </>
 }
-
-const orders: Order[] = [
-  {
-    fullname: 'Antoine Cheron',
-    telephone: '06.12.85.59.89',
-    address: 'Le Pré de la Grande 61190 Bubertré',
-    paymentMethod: 'carte',
-    status: 'new',
-    passedOn: new Date(Date.now()),
-    items: [
-      {
-        id: '1',
-        title: 'Crottin chèvres',
-        category: 'Catégorie 1',
-        price: 2.25,
-        amount: 2
-      },
-      {
-        id: '2',
-        title: 'Crottin brebis',
-        category: 'Catégorie 2',
-        price: 22.25,
-        amount: 4
-      }
-    ]
-  },
-  {
-    fullname: 'Antoine Cheron (2)',
-    telephone: '06.12.85.59.89',
-    address: 'Le Pré de la Grande 61190 Bubertré',
-    paymentMethod: 'carte',
-    status: 'in-progress',
-    passedOn: new Date(Date.now()),
-    items: [
-      {
-        id: '1',
-        title: 'Crottin chèvres',
-        category: 'Catégorie 1',
-        price: 2.25,
-        amount: 2
-      },
-      {
-        id: '2',
-        title: 'Crottin brebis',
-        category: 'Catégorie 2',
-        price: 22.25,
-        amount: 4
-      }
-    ]
-  }
-]
 
 export default OrdersPage

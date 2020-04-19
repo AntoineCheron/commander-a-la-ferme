@@ -13,14 +13,11 @@ const Navbar: FunctionComponent<{}> = () => {
   const history = useHistory()
   const current = useMemo(() => {
     const currentPath = window.location.pathname.slice(1)
-    if (currentPath === '') {
+    if (currentPath === '' || currentPath.includes('commande')) {
       return 'commandes'
+    } else {
+      return currentPath
     }
-
-    const indexOfSlash = currentPath.indexOf('/')
-    return indexOfSlash === -1
-      ? currentPath
-      : currentPath.slice(0, currentPath.indexOf('/'))
   }, [window.location.pathname])
 
   return (

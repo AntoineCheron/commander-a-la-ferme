@@ -13,6 +13,7 @@ export type BaseInventoryItem = {
 }
 
 export type Order = {
+  id: string
   fullname: string
   telephone: string
   email?: string
