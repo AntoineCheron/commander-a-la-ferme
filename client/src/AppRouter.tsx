@@ -16,7 +16,7 @@ const AppRouter = () => {
       <Route path="/app/login" exact component={Login} />
       <Route path={["", "/"]} exact><Redirect to="/app/commandes" /></Route>
       <PrivateRoute path="/app" exact><Redirect to="/app/commandes" /></PrivateRoute>
-      <PrivateRoute path="/app/commandes" exact><Orders /></PrivateRoute>
+      <PrivateRoute path="/app/commandes"><Orders /></PrivateRoute>
       <PrivateRoute path="/app/commande/:orderId" exact><Order /></PrivateRoute>
       <PrivateRoute path="/app/stock" exact><Inventory /></PrivateRoute>
       <PrivateRoute path="/app/logout" exact><Logout /></PrivateRoute>
