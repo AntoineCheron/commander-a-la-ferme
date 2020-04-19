@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { Route, RouteComponentProps, Switch, useHistory, Redirect } from 'react-router-dom'
+import { Route, Switch, useHistory, Redirect } from 'react-router-dom'
 import { Radio, Typography } from 'antd'
 
 import AppLayout from '../components/AppLayout'
@@ -9,24 +9,25 @@ import OrderService from '../services/OrderService'
 
 const { Title } = Typography
 
-const OrdersPage: FunctionComponent<RouteComponentProps> = ({ match }) => {
+const OrdersPage: FunctionComponent<{}> = () => {
+  const path = window.location.pathname
   return (
     <AppLayout>
       <Title>Commandes</Title>
       <Switch>
-        <Route path={[match.url, match.url + "/a-preparer"]} exact>
+        <Route path={[path, path + "/a-preparer"]} exact>
           <Orders statusFilter={['new', 'in-progress']} activeKey="todo" />
         </Route>
 
-        <Route path={`${match.url}/terminees`} exact>
+        <Route path={`${path}/terminees`} exact>
           <Orders statusFilter={['completed', 'canceled']} activeKey="done" />
         </Route>
 
-        <Route path={`${match.url}/toutes`} exact>
+        <Route path={`${path}/toutes`} exact>
           <Orders activeKey="all" />
         </Route>
 
-        <Route path={`${match.url}`} ><Redirect to={`${match.url}`} /></Route>
+        <Route path={`${path}`} ><Redirect to={`${path}`} /></Route>
       </Switch>
     </AppLayout>)
 }

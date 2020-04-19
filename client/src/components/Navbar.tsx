@@ -16,13 +16,12 @@ const Navbar: FunctionComponent<{}> = () => {
   const history = useHistory()
   const current = useMemo(() => {
     const currentPath = window.location.pathname.slice(5)
-    console.log(currentPath)
     if (currentPath === '' || currentPath.includes('commande')) {
       return 'commandes'
     } else {
       return currentPath
     }
-  }, [window.location.pathname])
+  }, [])
 
   const onClick = (e: ClickParam) => {
     if (e.key === 'form') {

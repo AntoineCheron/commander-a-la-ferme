@@ -1,5 +1,5 @@
-import React from 'react'
-import { Redirect, Route, Switch, useParams } from 'react-router-dom'
+import React, { FunctionComponent } from 'react'
+import { Redirect, Route, Switch, RouteProps } from 'react-router-dom'
 
 import Inventory from './pages/Inventory'
 import Order from './pages/Order'
@@ -8,19 +8,35 @@ import Login from './pages/Login'
 import Logout from './pages/Logout'
 import PublicForm from './pages/PublicForm'
 
+import AuthService from './services/AuthService'
+
 const AppRouter = () => {
   return <>
     <Switch>
-      <Route path={["", "/"]} exact render={() => <Redirect to="/app" />} />
-      <Route path="/app" exact component={Orders} />
-      <Route path="/app/commandes" component={Orders} />
-      <Route path="/app/commande/:orderId" exact component={Order} />
-      <Route path="/app/stock" exact component={Inventory} />
       <Route path="/app/login" exact component={Login} />
-      <Route path="/app/logout" exact component={Logout} />
-      <Route path="/app/*" render={() => <Redirect to="/app" />} />
+      <Route path={["", "/"]} exact><Redirect to="/app/commandes" /></Route>
+      <PrivateRoute path="/app" exact><Redirect to="/app/commandes" /></PrivateRoute>
+      <PrivateRoute path="/app/commandes" exact><Orders /></PrivateRoute>
+      <PrivateRoute path="/app/commande/:orderId" exact><Order /></PrivateRoute>
+      <PrivateRoute path="/app/stock" exact><Inventory /></PrivateRoute>
+      <PrivateRoute path="/app/logout" exact><Logout /></PrivateRoute>
+      <PrivateRoute path="/app/*"><Redirect to="/app/commandes" /></PrivateRoute>
       <Route path="/:farmName" exact component={PublicForm} />
     </Switch>
   </>
 }
+
+const PrivateRoute: FunctionComponent<RouteProps> = ({ children, ...rest }) =>
+  <Route {...rest} render={({ location }) =>
+    AuthService.isAuthenticated()
+      ? children
+      : <Redirect
+        to={{
+          pathname: "/app/login",
+          state: { from: location }
+        }}
+      />
+  }
+  />
+
 export default AppRouter

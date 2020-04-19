@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Layout, Result } from 'antd'
 
 import OrderForm from '../components/OrderForm'
