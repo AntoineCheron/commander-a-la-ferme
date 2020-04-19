@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import AppRouter from './AppRouter'
 
 import 'antd/dist/antd.css'

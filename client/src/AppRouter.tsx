@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 import Inventory from './pages/Inventory'
 import Orders from './pages/Orders'
@@ -8,11 +8,14 @@ import Logout from './pages/Logout'
 
 const AppRouter = () => {
   return <>
-    <Route path="/" exact component={Orders} />
-    <Route path="/commandes" exact component={Orders} />
-    <Route path="/stock" exact component={Inventory} />
-    <Route path="/login" exact component={Login} />
-    <Route path="/logout" exact component={Logout} />
+    <Switch>
+      <Route path="/" exact component={Orders} />
+      <Route path="/commandes" component={Orders} />
+      <Route path="/stock" exact component={Inventory} />
+      <Route path="/login" exact component={Login} />
+      <Route path="/logout" exact component={Logout} />
+      <Route path="/*" render={() => <Redirect to="/" />} />
+    </Switch>
   </>
 }
 export default AppRouter

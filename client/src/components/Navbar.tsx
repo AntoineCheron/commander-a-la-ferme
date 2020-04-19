@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { useMemo, FunctionComponent } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import {
@@ -11,7 +11,17 @@ const { Header } = Layout
 
 const Navbar: FunctionComponent<{}> = () => {
   const history = useHistory()
-  const current = window.location.pathname.slice(1) || 'commandes'
+  const current = useMemo(() => {
+    const currentPath = window.location.pathname.slice(1)
+    if (currentPath === '') {
+      return 'commandes'
+    }
+
+    const indexOfSlash = currentPath.indexOf('/')
+    return indexOfSlash === -1
+      ? currentPath
+      : currentPath.slice(0, currentPath.indexOf('/'))
+  }, [window.location.pathname])
 
   return (
     <Header style={{ background: 'white' }}>

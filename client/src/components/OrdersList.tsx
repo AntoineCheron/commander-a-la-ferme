@@ -15,7 +15,7 @@ const OrdersList: FunctionComponent<OrdersListProps> = ({ orders }) => {
   })
 
   return <>
-    <Table columns={columns} dataSource={ordersWithTotal} />
+    <Table columns={columns} dataSource={ordersWithTotal} pagination={{ showSizeChanger: true, defaultPageSize: 20 }} />
   </>
 }
 

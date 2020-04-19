@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react'
-import { Typography, Form, Input, InputNumber, Popconfirm, Table } from 'antd'
+import React from 'react'
+import { Form, Input, InputNumber } from 'antd'
 
 import { InventoryItem } from '../models';
 
