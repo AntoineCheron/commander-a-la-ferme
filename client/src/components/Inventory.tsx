@@ -13,7 +13,7 @@ const Inventory: FunctionComponent<InventoryProps> = ({ items, addItem, editItem
   const [addedCategories, setAddedCategories] = useState<string[]>([])
 
   const categoriesFromItems: Array<string> = Array.from(new Set(items.map(item => item.category)))
-  const categories = useMemo(() => categoriesFromItems.concat(addedCategories), [categoriesFromItems, addedCategories])
+  const categories = useMemo(() => Array.from(new Set(categoriesFromItems.concat(addedCategories))), [categoriesFromItems, addedCategories])
 
   const addCategory = () => {
     const title = prompt('Saisissez le nom de la catégorie de produit à créer')
