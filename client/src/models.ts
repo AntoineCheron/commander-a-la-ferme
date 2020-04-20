@@ -24,17 +24,20 @@ export type BaseInventoryItem = {
   price: number
 }
 
-export type Order = {
-  id: string
+export type OrderRequest = {
   fullname: string
   telephone: string
   email?: string
   address: string
-  paymentMethod: string
+  paymentMethod: PaymentMethod
+  items: OrderedItem[]
+}
+
+export type Order = OrderWithoutId & { id: string }
+export type OrderWithoutId = OrderRequest & {
   status: OrderStatus
   passedOn: Date
   completedOn?: Date
-  items: OrderedItem[]
 }
 
 export type OrderStatus = 'new' | 'in-progress' | 'completed' | 'canceled'

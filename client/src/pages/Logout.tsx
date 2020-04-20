@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
-import { Layout, Result, Spin } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
-import AuthService from '../services/AuthService'
+import { Layout, Result } from 'antd'
 import { useHistory } from 'react-router-dom'
+
+import Loader from '../components/Loader'
+import AuthService from '../services/AuthService'
 
 const LogoutPage: FunctionComponent<{}> = () => {
 
@@ -24,7 +25,7 @@ const LogoutPage: FunctionComponent<{}> = () => {
           } else if (success) {
             return <SuccesfulLogout />
           } else {
-            return <LogoutInProgress />
+            return <Loader title='Déconnexion en cours...' />
           }
         })()}
       </Layout.Content>
@@ -50,12 +51,5 @@ const LogoutError: FunctionComponent<{ errorMessage: string }> = ({ errorMessage
     subTitle={errorMessage}
   />
 }
-
-const loadingIcon = <LoadingOutlined style={{ fontSize: 64 }} spin />
-const LogoutInProgress: FunctionComponent<{}> = () =>
-  <Result
-    icon={<Spin indicator={loadingIcon} />}
-    title="Déconnexion en cours..."
-  />
 
 export default LogoutPage

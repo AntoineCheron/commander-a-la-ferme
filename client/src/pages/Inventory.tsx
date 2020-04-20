@@ -1,31 +1,59 @@
-import React, { useState, FunctionComponent } from 'react'
-import { Typography } from 'antd'
+import React, { useState, useMemo, FunctionComponent } from 'react'
+import { message, Skeleton, Typography } from 'antd'
+import { AxiosError } from 'axios'
 
 import AppLayout from '../components/AppLayout'
-import { InventoryItem } from '../models'
 import Inventory from '../components/Inventory'
+import ErrorResult from '../components/ErrorResult'
+import InventoryService from '../services/InventoryService'
+import { InventoryItem } from '../models'
+import { useEffectWrapper } from '../hooks'
 
 const { Title, Paragraph } = Typography
 
 const InventoryPage: FunctionComponent<{}> = () => {
-  const [items, setItems] = useState<InventoryItem[]>(inventory)
+  const inventoryService = useMemo(() => new InventoryService(), [])
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<AxiosError>()
+  const [items, setItems] = useState<InventoryItem[]>([])
+
+  useEffectWrapper((isMounted) => {
+    setIsLoading(true)
+    inventoryService.getInventory()
+      .then(data => { if (isMounted) setItems(data) })
+      .catch(error => { if (isMounted) setError(error) })
+      .finally(() => { if (isMounted) setIsLoading(false) })
+  }, [])
 
   const addItem = (category: string) => {
     const itemId = `pending-${genRandomNumber()}`
-    setItems([
-      ...items,
-      { id: itemId, title: 'Titre', category, price: 0, remaining: 0, ordered: 0 }
-    ])
+    const item = { id: itemId, title: 'Titre', category, price: 0, remaining: 0, ordered: 0 }
+    setItems([...items, item])
+
     return itemId
   }
 
   const editItem = (key: string, item: InventoryItem) => {
-    console.log(item)
-    if (items.find(item => item.id === key) !== undefined) {
+    const itemWithId = { ...item, id: key }
+    if (items.find(i => i.id === key) !== undefined) {
       const newData = [...items]
-      const index = newData.findIndex(item => key === item.id)
-      newData.splice(index, 1, item)
+      const index = newData.findIndex(i => i.id === key)
+      newData.splice(index, 1, itemWithId)
       setItems(newData)
+
+      if (itemWithId.id.startsWith('pending')) {
+        const copy = Object.assign({}, item)
+        inventoryService.create(copy)
+          .then(newItem => {
+            const itemsCopy = items.map(i => i.id === itemWithId.id ? newItem : i)
+            setItems(itemsCopy)
+          })
+          .catch(error => message.error(`Une erreur s'est produite lors de la création du produit ${item.title}. Le serveur a retourné : ${error.message}`))
+      } else {
+        inventoryService.update(itemWithId)
+          .catch(error => message.error(`Une erreur s'est produite lors de la modification du produit ${item.title}. Le serveur a retourné : ${error.message}`))
+      }
     }
   }
 
@@ -34,7 +62,11 @@ const InventoryPage: FunctionComponent<{}> = () => {
       <Title>Stock</Title>
       <Paragraph>Gérez votre stock et suivez les quantités commandées</Paragraph>
 
-      <Inventory items={items} addItem={addItem} editItem={editItem} />
+      {
+        isLoading ? <Skeleton active />
+          : error !== undefined ? <ErrorResult error={error} title="Impossible de charger l'inventaire" />
+            : <Inventory items={items} addItem={addItem} editItem={editItem} />
+      }
 
     </AppLayout>)
 }
@@ -42,11 +74,5 @@ const InventoryPage: FunctionComponent<{}> = () => {
 function genRandomNumber(): number {
   return Math.floor((Math.random() * 1000000) + 1);
 }
-
-const inventory: InventoryItem[] = [
-  { id: '1', title: 'Crottins de brebis BIO', category: 'Produits en lait BIO de brebis', price: 2.50, remaining: 80, ordered: 20 },
-  { id: '2', title: 'Crottins de chèvre BIO', category: 'Produits en lait BIO de chèvres', price: 2.25, remaining: 80, ordered: 20 },
-  { id: 'pending-3', title: 'Crottins de brebis', category: 'Produits en lait BIO de brebis', price: 2.50, remaining: 80, ordered: 20 },
-]
 
 export default InventoryPage

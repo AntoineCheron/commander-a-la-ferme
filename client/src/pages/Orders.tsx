@@ -1,11 +1,13 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import { Route, Switch, useHistory, Redirect } from 'react-router-dom'
-import { Radio, Typography } from 'antd'
+import { Radio, Skeleton, Typography } from 'antd'
 
 import AppLayout from '../components/AppLayout'
 import OrdersList from '../components/OrdersList'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import OrderService from '../services/OrderService'
+import Fetch from '../components/Fetch'
+import { Order } from '../models'
 
 const { Title } = Typography
 
@@ -34,8 +36,9 @@ const OrdersPage: FunctionComponent<{}> = () => {
 
 const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }> = ({ statusFilter, activeKey }) => {
   const history = useHistory()
-  const orders = OrderService.getAll()
-  const filteredOrders = orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
+  const orderService = useMemo(() => new OrderService(), [])
+
+  const filterOrders = (orders: Order[]) => orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
 
   const handleModeChange = (e: RadioChangeEvent) => {
     const targetUrl = e.target.value === 'todo' ? '/app/commandes/a-preparer'
@@ -50,7 +53,14 @@ const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }>
       <Radio.Button value="done">Terminées</Radio.Button>
       <Radio.Button value="all">Toutes</Radio.Button>
     </Radio.Group>
-    <OrdersList orders={filteredOrders} />
+
+    <Fetch
+      fct={() => orderService.getAll()}
+      errorTitle="Oups, nous n'arrivons pas à récupérer vos commandes"
+      loading={() => <Skeleton active />}
+    >
+      {orders => <OrdersList orders={filterOrders(orders)} />}
+    </Fetch>
   </>
 }
 

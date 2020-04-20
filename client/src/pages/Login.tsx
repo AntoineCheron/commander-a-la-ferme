@@ -22,7 +22,6 @@ const LoginPage: FunctionComponent<{}> = () => {
         {success
           ? <SuccesfulLogin />
           : <NormalLoginCard login={onFinish} errorMessage={errorMessage} />
-
         }
       </Layout.Content>
     </Layout>
