@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import { Route, Switch, useHistory, Redirect } from 'react-router-dom'
-import { Radio, Skeleton, Typography } from 'antd'
+import { Radio, Row, Skeleton, Typography } from 'antd'
 
 import AppLayout from '../layout/AppLayout'
 import OrdersList from './OrdersList'
@@ -8,6 +8,7 @@ import { RadioChangeEvent } from 'antd/lib/radio'
 import OrderService from '../../services/OrderService'
 import Fetch from '../commons/Fetch'
 import { Order } from '../../models'
+import OrderingFormUrlAlert from './OrderingFormUrlAlert'
 
 const { Title } = Typography
 
@@ -16,6 +17,11 @@ const OrdersPage: FunctionComponent<{}> = () => {
   return (
     <AppLayout>
       <Title>Commandes</Title>
+
+      <Row style={{ marginBottom: '16px' }}>
+        <OrderingFormUrlAlert />
+      </Row>
+
       <Switch>
         <Route path={[path, path + "/a-preparer"]} exact>
           <Orders statusFilter={['new', 'in-progress']} activeKey="todo" />
