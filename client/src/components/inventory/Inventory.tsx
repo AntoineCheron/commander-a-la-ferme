@@ -2,7 +2,7 @@ import React, { useState, useMemo, FunctionComponent } from 'react'
 import { Button, Typography, notification } from 'antd'
 import { PlusOutlined, SmileOutlined } from '@ant-design/icons'
 
-import { InventoryItem } from '../models'
+import { InventoryItem } from '../../models'
 import EditableInventoryTable from './EditableInventoryTable'
 
 const { Title } = Typography

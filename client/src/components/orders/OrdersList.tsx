@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Button, Table, Tag, Typography } from 'antd'
 
-import { Order, OrderStatus, statusColor } from '../models'
+import { Order, OrderStatus, statusColor } from '../../models'
 import { useHistory } from 'react-router-dom'
 
 const { Text } = Typography

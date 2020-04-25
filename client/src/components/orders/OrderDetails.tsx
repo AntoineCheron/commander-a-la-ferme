@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 import { Card, Descriptions, Col, Row, Statistic, Tag, Typography } from 'antd'
 import { CalendarOutlined, CreditCardOutlined, FlagOutlined, HomeOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons'
 
-import { Order, statusColor } from '../models'
+import { Order, statusColor } from '../../models'
 import OrderedItemsList from './OrderedItemsList'
 
 const { Title, Text } = Typography

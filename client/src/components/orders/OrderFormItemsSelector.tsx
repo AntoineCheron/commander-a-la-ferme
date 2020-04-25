@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Card, Form, Col, Row, Typography, InputNumber } from 'antd'
 
-import { OrderableItem } from '../models'
+import { OrderableItem } from '../../models'
 
 const { Title, Text } = Typography
 

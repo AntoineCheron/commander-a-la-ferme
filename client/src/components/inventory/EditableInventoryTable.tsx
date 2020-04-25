@@ -1,7 +1,7 @@
 import React, { useState, FunctionComponent, useEffect } from 'react'
 import { Form, Table } from 'antd'
 
-import { InventoryItem } from '../models'
+import { InventoryItem } from '../../models'
 import EditableCell from './EditableCell'
 
 interface InventoryProps { items: InventoryItem[], lastAddedItem?: string, editItem: (k: string, i: InventoryItem) => void }

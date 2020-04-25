@@ -61,6 +61,6 @@ export default class AuthService {
   }
 
   private static setConnectedUser (user: User): void {
-    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user))
   }
 }

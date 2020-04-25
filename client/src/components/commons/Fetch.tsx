@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, ReactNode } from 'react'
 import { AxiosError } from 'axios'
 
-import ErrorResult from '../components/ErrorResult'
+import ErrorResult from './ErrorResult'
 import Loader from './Loader'
 
 type Props<T> = {

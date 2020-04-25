@@ -3,10 +3,10 @@ import { useHistory, useParams } from 'react-router-dom'
 import { Button } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 
-import AppLayout from '../components/AppLayout'
-import OrderService from '../services/OrderService'
-import OrderDetails from '../components/OrderDetails'
-import Fetch from '../components/Fetch'
+import AppLayout from '../layout/AppLayout'
+import OrderService from '../../services/OrderService'
+import OrderDetails from './OrderDetails'
+import Fetch from '../commons/Fetch'
 
 const Order: FunctionComponent<{}> = () => {
   const history = useHistory()

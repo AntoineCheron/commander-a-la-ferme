@@ -2,12 +2,12 @@ import React, { useState, useMemo, FunctionComponent } from 'react'
 import { message, Skeleton, Typography } from 'antd'
 import { AxiosError } from 'axios'
 
-import AppLayout from '../components/AppLayout'
-import Inventory from '../components/Inventory'
-import ErrorResult from '../components/ErrorResult'
-import InventoryService from '../services/InventoryService'
-import { InventoryItem } from '../models'
-import { useEffectWrapper } from '../hooks'
+import AppLayout from '../layout/AppLayout'
+import Inventory from './Inventory'
+import ErrorResult from '../commons/ErrorResult'
+import InventoryService from '../../services/InventoryService'
+import { InventoryItem } from '../../models'
+import { useEffectWrapper } from '../../hooks'
 
 const { Title, Paragraph } = Typography
 

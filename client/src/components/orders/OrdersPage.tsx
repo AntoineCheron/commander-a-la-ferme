@@ -2,12 +2,12 @@ import React, { FunctionComponent, useMemo } from 'react'
 import { Route, Switch, useHistory, Redirect } from 'react-router-dom'
 import { Radio, Skeleton, Typography } from 'antd'
 
-import AppLayout from '../components/AppLayout'
-import OrdersList from '../components/OrdersList'
+import AppLayout from '../layout/AppLayout'
+import OrdersList from './OrdersList'
 import { RadioChangeEvent } from 'antd/lib/radio'
-import OrderService from '../services/OrderService'
-import Fetch from '../components/Fetch'
-import { Order } from '../models'
+import OrderService from '../../services/OrderService'
+import Fetch from '../commons/Fetch'
+import { Order } from '../../models'
 
 const { Title } = Typography
 

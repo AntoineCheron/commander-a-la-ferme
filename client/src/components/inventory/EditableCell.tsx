@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input, InputNumber } from 'antd'
 
-import { InventoryItem } from '../models';
+import { InventoryItem } from '../../models';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;

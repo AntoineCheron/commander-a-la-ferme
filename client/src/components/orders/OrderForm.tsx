@@ -2,11 +2,11 @@ import React, { useState, FunctionComponent, useMemo } from 'react'
 import { Button, Card, Col, Select, Form, Input, Row, Typography, Result, Spin } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
-import { Farm, OrderableItem, PaymentMethod } from '../models'
-import FarmCard from './FarmCard'
+import { Farm, OrderableItem, PaymentMethod } from '../../models'
+import FarmCard from '../FarmCard'
 import OrderFormItemsSelector from './OrderFormItemsSelector'
 import OrderSummary from './OrderSummary'
-import OrderService from '../services/OrderService'
+import OrderService from '../../services/OrderService'
 
 const { Title } = Typography
 

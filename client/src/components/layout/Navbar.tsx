@@ -8,7 +8,7 @@ import {
   ReconciliationOutlined
 } from '@ant-design/icons'
 import { ClickParam } from 'antd/lib/menu'
-import AuthService from '../services/AuthService'
+import AuthService from '../../services/AuthService'
 
 const { Header } = Layout
 

@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Table, Typography } from 'antd'
 
-import { OrderedItem } from '../models'
+import { OrderedItem } from '../../models'
 
 const { Text } = Typography
 

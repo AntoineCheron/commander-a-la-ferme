@@ -2,8 +2,8 @@ import React, { FunctionComponent, useState, useEffect } from 'react'
 import { Layout, Result } from 'antd'
 import { useHistory } from 'react-router-dom'
 
-import Loader from '../components/Loader'
-import AuthService from '../services/AuthService'
+import Loader from '../commons/Loader'
+import AuthService from '../../services/AuthService'
 
 const LogoutPage: FunctionComponent<{}> = () => {
 

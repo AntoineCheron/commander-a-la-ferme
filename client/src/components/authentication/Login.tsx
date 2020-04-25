@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react'
 import { Alert, Col, Form, Input, Button, Layout, Row, Card, Result, Typography } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { Store } from 'antd/lib/form/interface';
-import AuthService from '../services/AuthService';
+import AuthService from '../../services/AuthService';
 import { useHistory } from 'react-router-dom';
 
 const LoginPage: FunctionComponent<{}> = () => {

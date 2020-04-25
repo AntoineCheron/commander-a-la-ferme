@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from 'react'
 import { Redirect, Route, Switch, RouteProps } from 'react-router-dom'
 
-import Inventory from './pages/Inventory'
-import Order from './pages/Order'
-import Orders from './pages/Orders'
-import Login from './pages/Login'
-import Logout from './pages/Logout'
-import PublicForm from './pages/PublicForm'
+import Inventory from './components/inventory/InventoryPage'
+import Order from './components/orders/OrderPage'
+import Orders from './components/orders/OrdersPage'
+import Login from './components/authentication/Login'
+import Logout from './components/authentication/Logout'
+import PublicForm from './components/orders/PublicOrderingFormPage'
 
 import AuthService from './services/AuthService'
 

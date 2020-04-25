@@ -2,11 +2,11 @@ import React, { useEffect, useState, FunctionComponent } from 'react'
 import { useParams } from 'react-router-dom'
 import { Layout, Result } from 'antd'
 
-import OrderForm from '../components/OrderForm'
-import ErrorResult from '../components/ErrorResult'
-import Loader from '../components/Loader'
-import FormService from '../services/FormService'
-import { Farm } from '../models'
+import OrderForm from './OrderForm'
+import ErrorResult from '../commons/ErrorResult'
+import Loader from '../commons/Loader'
+import FormService from '../../services/FormService'
+import { Farm } from '../../models'
 import { AxiosError } from 'axios'
 
 const { Content } = Layout
