@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FunctionComponent } from 'react'
 import { useParams } from 'react-router-dom'
-import { Layout, Result } from 'antd'
+import { Layout } from 'antd'
 
 import OrderForm from './OrderForm'
 import ErrorResult from '../commons/ErrorResult'

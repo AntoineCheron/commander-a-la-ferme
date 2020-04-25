@@ -27,4 +27,15 @@ export default class FarmService {
   public async create (farm: FarmDetailsWithoutId): Promise<void> {
     this.farms.push({ ...farm, id: uuid() })
   }
+
+  public async update (farm: FarmDetailsWithoutId): Promise<void> {
+    const existingFarm = this.farms.find(f => f.name === farm.name)
+
+    if (existingFarm !== undefined) {
+      const index = this.farms.indexOf(existingFarm)
+      this.farms[index] = { ...existingFarm, ...farm }
+    } else {
+      throw new NotFound()
+    }
+  }
 }

@@ -6,7 +6,7 @@ import Loader from './Loader'
 
 type Props<T> = {
   fct: () => Promise<T>
-  children: (t: T) => ReactNode
+  children: (t: T, refresh?: () => void) => ReactNode
   loadTitle?: string
   errorTitle?: string
   errorSubTitle?: string
@@ -19,22 +19,22 @@ export default function Fetch<T>({ fct, children, loading, errorTitle, errorSubT
   const [error, setError] = useState<AxiosError>()
   const [data, setData] = useState<T>()
 
-  const resfresh = useCallback(() => {
+  const refresh = useCallback(() => {
     setIsLoading(true)
     fct()
       .then(setData)
       .catch(setError)
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [fct])
 
-  useEffect(() => resfresh(), [])
+  useEffect(() => refresh(), [refresh])
 
   if (isLoading) {
     return loading ? loading() : <Loader title={loadTitle || "Chargement en cours..."} />
   } else if (error) {
     return <ErrorResult error={error} title={errorTitle || "Erreur iconnue"} subtitle={errorSubTitle} />
   } else if (data !== undefined) {
-    return <>{children(data)}</>
+    return <>{children(data, refresh)}</>
   } else {
     return <ErrorResult title="Une erreur inconnue s'est produite. Essayez de recharger la page." extra={errorExtra} />
   }

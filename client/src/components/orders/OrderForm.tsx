@@ -3,7 +3,7 @@ import { Button, Card, Col, Select, Form, Input, Row, Typography, Result, Spin }
 import { CheckOutlined } from '@ant-design/icons'
 
 import { Farm, OrderableItem, PaymentMethod } from '../../models'
-import FarmCard from '../FarmCard'
+import FarmCard from '../my_farm/FarmCard'
 import OrderFormItemsSelector from './OrderFormItemsSelector'
 import OrderSummary from './OrderSummary'
 import OrderService from '../../services/OrderService'

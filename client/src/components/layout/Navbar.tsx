@@ -2,6 +2,7 @@ import React, { useMemo, FunctionComponent } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import {
+  HomeOutlined,
   FormOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
@@ -42,6 +43,10 @@ const Navbar: FunctionComponent<{}> = () => {
 
         <Menu.Item key='stock'>
           <ReconciliationOutlined /> Stock
+        </Menu.Item>
+
+        <Menu.Item key='mon-exploitation'>
+          <HomeOutlined /> Mon exploitation
         </Menu.Item>
 
         <Menu.Item key='form'>

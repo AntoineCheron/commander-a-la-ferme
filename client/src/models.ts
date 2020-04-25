@@ -8,6 +8,7 @@ export type Farm = {
 }
 
 export type PaymentMethod = 'Carte Bancaire' | 'Espèces' | 'Chèque'
+export const PAYMENT_METHODS = ['Carte Bancaire', 'Espèces', 'Chèque']
 
 export type InventoryItem = BaseInventoryItem & {
   remaining: number

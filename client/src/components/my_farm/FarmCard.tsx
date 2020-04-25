@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 import { Card, Descriptions, Tag, Typography } from 'antd'
 import { EditOutlined, CreditCardOutlined, HomeOutlined, PhoneOutlined } from '@ant-design/icons'
 
-import { Farm } from '../models'
+import { Farm } from '../../models'
 
 const { Text } = Typography
 
