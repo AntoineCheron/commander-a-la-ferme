@@ -34,10 +34,18 @@ function AuthenticationController () {
     }, res)
   })
 
-  router.post('/register', (_, res) => {
-    res
-      .status(500)
-      .json({ error: "Cette fonctionnalité n'est pas encore disponible." })
+  router.post('/register', (req, res) => {
+    handleErrorsGlobally(async () => {
+      const { username, password } = req.body
+      if (username !== undefined || password !== undefined) {
+        const tokenAndUser = AuthenticationService.register(username, password)
+        res.status(201).json(tokenAndUser)
+      } else {
+        res.status(400).json({
+          error: "Le nom d'utilisateur ou le mot de passe est absent."
+        })
+      }
+    }, res)
   })
 
   return router

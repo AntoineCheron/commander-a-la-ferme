@@ -1,3 +1,5 @@
+type AnyMap = { [key: string]: any | undefined }
+
 export type Farm = {
   name: string
   telephone: string
@@ -50,8 +52,27 @@ export const statusColor = {
   canceled: '#108ee9'
 }
 
-export type User = {
+export type User = UserNotOnboarded & {
+  farmName: string
+}
+
+export function isUser (input: AnyMap): input is User {
+  return input?.farmName && isUserNotOnboarded(input)
+}
+
+export type UserNotOnboarded = {
   id: string
   username: string
-  farmName: string
+}
+
+export function isUserNotOnboarded (input: AnyMap): input is UserNotOnboarded {
+  return input?.id && input?.username
+}
+
+export type FarmDetailsWithoutId = {
+  name: string
+  telephone: string
+  address: string
+  description: string
+  paymentMethods: PaymentMethod[]
 }

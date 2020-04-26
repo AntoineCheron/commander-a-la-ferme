@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { Alert, Col, Form, Input, Button, Layout, Row, Card, Result, Typography } from 'antd'
+import { Col, Form, Input, Button, Layout, Row, Card, Result, Typography } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { Store } from 'antd/lib/form/interface';
 import AuthService from '../../services/AuthService';
@@ -13,7 +13,7 @@ const LoginPage: FunctionComponent<{}> = () => {
   const onFinish = (values: Store) => {
     AuthService.login(values.username, values.password)
       .then(() => setSuccess(true))
-      .catch(setErrorMessage)
+      .catch(error => { setErrorMessage(error.response.data.description || error.message); setSuccess(false) })
   }
 
   return (
@@ -44,17 +44,6 @@ const NormalLoginCard: FunctionComponent<{ errorMessage?: string, login: (values
     <Row>
       <Col span={10} offset={7}>
         <Card title="Connexion">
-
-          <Alert
-            message="Information"
-            description={<>
-              <Typography.Paragraph>Ceci est une démonstration dont l'objectif est de récupérer votre avis sur l'outil.</Typography.Paragraph>
-              <Typography.Paragraph>Pour vous connecter, entrez le nom d'utilisateur <b>test</b> et le mot de passe <b>test</b></Typography.Paragraph>
-            </>}
-            type="info"
-            showIcon
-            style={{ marginBottom: '16px' }}
-          />
 
           <Form
             name="normal_login"
@@ -88,7 +77,7 @@ const NormalLoginCard: FunctionComponent<{ errorMessage?: string, login: (values
               <Button type="primary" htmlType="submit" className="login-form-button" style={{ marginRight: '8px' }}>
                 Connexion
               </Button>
-              ou <a href="">créer un compte</a>
+              ou <a href="/app/inscription">créer un compte</a>
             </Form.Item>
           </Form>
         </Card>

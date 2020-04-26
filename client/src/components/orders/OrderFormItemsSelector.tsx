@@ -62,6 +62,7 @@ const CategorySelector: FunctionComponent<CategorySelectorProps> = ({ items, cat
 
 const validateMessages = {
   number: {
+    // eslint-disable-next-line no-template-curly-in-string
     range: 'Doit être compris entre ${min} et ${max}',
   },
 }

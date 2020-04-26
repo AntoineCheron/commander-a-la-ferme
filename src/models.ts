@@ -1,24 +1,76 @@
-export class User {
+type AnyMap = { [key: string]: any | undefined }
+
+export class UserNotOnboarded {
+  constructor (readonly id: string, readonly username: string) {}
+
+  static from (input: AnyMap): UserNotOnboarded | undefined {
+    if (input?.username && input?.id) {
+      return new UserNotOnboarded(input.id, input.username)
+    } else {
+      return undefined
+    }
+  }
+}
+
+export class UserNotOnboardedWithPassword extends UserNotOnboarded {
+  constructor (
+    readonly id: string,
+    readonly username: string,
+    readonly password: string
+  ) {
+    super(id, username)
+  }
+
+  public toUserNotOnboarded (): UserNotOnboarded {
+    return new UserNotOnboarded(this.id, this.username)
+  }
+
+  static from (input: AnyMap): UserNotOnboarded | undefined {
+    if (input?.username && input?.id && input?.password) {
+      return new UserNotOnboarded(input.id, input.username)
+    } else {
+      return undefined
+    }
+  }
+}
+
+export class User extends UserNotOnboarded {
+  constructor (
+    readonly id: string,
+    readonly username: string,
+    readonly farmName: string
+  ) {
+    super(id, username)
+  }
+
+  static from (input: AnyMap): UserNotOnboarded | undefined {
+    if (input?.username && input?.id && input?.farmName) {
+      return new User(input.id, input.username, input.farmName)
+    } else {
+      return undefined
+    }
+  }
+}
+
+export class UserWithPassword extends User {
   constructor (
     readonly id: string,
     readonly username: string,
     readonly password: string,
     readonly farmName: string
-  ) {}
+  ) {
+    super(id, username, farmName)
+  }
 
-  public publicRepresentation (): PublicUser {
-    return {
-      id: this.id,
-      username: this.username,
-      farmName: this.farmName
-    }
+  public toUser (): User {
+    return new User(this.id, this.username, this.farmName)
   }
 }
 
 export type PublicUser = {
   id: string
   username: string
-  farmName: string
+  farmName?: string
 }
 
 export type InventoryItem = BaseInventoryItem & {

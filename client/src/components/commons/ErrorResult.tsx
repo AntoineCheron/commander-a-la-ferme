@@ -3,7 +3,7 @@ import { Result } from 'antd'
 
 import { AxiosError } from 'axios'
 
-type Props = { error?: AxiosError, title: string, subtitle?: string, subtitleFallback?: string, extra?: ReactNode }
+type Props = { error?: Error, title: string, subtitle?: string, subtitleFallback?: string, extra?: ReactNode }
 
 const ErrorResult: FunctionComponent<Props> = ({ error, title, subtitle, subtitleFallback, extra }) => <Result
   status={toResultStatus(error)}
@@ -12,12 +12,16 @@ const ErrorResult: FunctionComponent<Props> = ({ error, title, subtitle, subtitl
   extra={extra}
 />
 
-function toResultStatus(error?: AxiosError): '403' | '404' | '500' | 'error' {
-  if (error?.code !== undefined && ["403", "404", "500"].includes(error.code)) {
+function toResultStatus(error?: Error): '403' | '404' | '500' | 'error' {
+  if (error !== undefined && isAxiosError(error) && error?.code !== undefined && ["403", "404", "500"].includes(error.code)) {
     return error.code as '403' | '404' | '500'
   } else {
     return 'error'
   }
+}
+
+function isAxiosError(error: Error): error is AxiosError {
+  return true
 }
 
 export default ErrorResult

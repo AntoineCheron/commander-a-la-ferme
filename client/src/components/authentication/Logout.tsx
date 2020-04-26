@@ -6,14 +6,13 @@ import Loader from '../commons/Loader'
 import AuthService from '../../services/AuthService'
 
 const LogoutPage: FunctionComponent<{}> = () => {
-
   const [errorMessage, setErrorMessage] = useState<string>()
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     AuthService.logout()
       .then(() => setSuccess(true))
-      .catch(setErrorMessage)
+      .catch(error => setErrorMessage(error.message))
   }, [])
 
   return (

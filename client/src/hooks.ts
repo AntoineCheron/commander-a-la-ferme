@@ -8,7 +8,7 @@ export function useQuery () {
 
 export function useEffectWrapper (
   f: (isMounted: boolean) => void,
-  deps: any[]
+  deps: React.DependencyList
 ) {
   useEffect(() => {
     var isMounted = true

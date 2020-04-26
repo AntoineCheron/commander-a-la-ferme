@@ -4,15 +4,18 @@ import AppRouter from './AppRouter'
 
 import 'antd/dist/antd.css'
 import './App.css'
+import ErrorBoundary from './components/commons/ErrorBoundary'
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <AppRouter />
+        <ErrorBoundary>
+          <AppRouter />
+        </ErrorBoundary>
       </Router>
     </div>
-  );
+  )
 }
 
 export default App;

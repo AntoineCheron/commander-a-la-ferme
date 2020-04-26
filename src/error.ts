@@ -1,15 +1,28 @@
 import { Response } from 'express'
 
-class ApplicationError extends Error {}
+class ApplicationError {
+  constructor (readonly message: string = '') {}
+}
 
 export class ForbiddenException extends ApplicationError {}
 export class WrongCredentialsException extends ApplicationError {}
+export class UnknownUserException extends ApplicationError {}
 export class IncompleteRequestException extends ApplicationError {}
-export class BusinessRuleEnforced extends ApplicationError {}
+export class BusinessRuleEnforced extends ApplicationError {
+  constructor (message?: string) {
+    super(message)
+  }
+}
 export class NotFound extends ApplicationError {}
 
+type ErrorKey = 'USER_NOT_ONBOARDED'
+
 export class HttpError {
-  constructor (public code: string | number, public description: string) {}
+  constructor (
+    public code: string | number,
+    public description: string,
+    readonly key?: ErrorKey
+  ) {}
 }
 
 function toHttpMessage (error: Error): HttpError {
@@ -19,7 +32,10 @@ function toHttpMessage (error: Error): HttpError {
 function toHttpStatus (error: Error): number {
   if (error instanceof ForbiddenException) {
     return 403
-  } else if (error instanceof WrongCredentialsException) {
+  } else if (
+    error instanceof WrongCredentialsException ||
+    error instanceof UnknownUserException
+  ) {
     return 401
   } else if (
     error instanceof IncompleteRequestException ||
@@ -34,10 +50,14 @@ function toHttpStatus (error: Error): number {
 }
 
 function describe (error: Error) {
-  if (error instanceof ForbiddenException) {
+  if (error.message !== undefined && error.message !== '') {
+    return error.message
+  } else if (error instanceof ForbiddenException) {
     return 'Access forbidden, you may not have access rights'
   } else if (error instanceof WrongCredentialsException) {
     return "Votre nom d'utilisateur ou mot de passe est incorrect."
+  } else if (error instanceof UnknownUserException) {
+    return 'Utilisateur inconnu.'
   } else if (
     error instanceof IncompleteRequestException ||
     error instanceof BusinessRuleEnforced
@@ -50,9 +70,13 @@ function describe (error: Error) {
   }
 }
 
-export function handleErrorsGlobally (
+export async function handleErrorsGlobally (
   f: () => Promise<void>,
   res: Response<any>
-) {
-  f().catch(error => res.status(toHttpStatus(error)).json(toHttpMessage(error)))
+): Promise<void> {
+  try {
+    await f()
+  } catch (error) {
+    res.status(toHttpStatus(error)).json(toHttpMessage(error))
+  }
 }

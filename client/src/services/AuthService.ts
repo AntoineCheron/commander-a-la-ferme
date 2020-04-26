@@ -26,6 +26,15 @@ export default class AuthService {
       .then(result => {
         this.updateToken(result.data.token)
         this.setConnectedUser(result.data.user)
+      }) as Promise<void>
+  }
+
+  static async register (username: string, password: string): Promise<void> {
+    return Http.instance()
+      .post('/register', { username, password })
+      .then(result => {
+        this.updateToken(result.data.token)
+        this.setConnectedUser(result.data.user)
       })
       .catch((error: AxiosError) => error.message) as Promise<void>
   }
@@ -33,11 +42,11 @@ export default class AuthService {
   static logout (): Promise<void> {
     return Http.instance()
       .post('/logout')
-      .then(() => {
+      .then(() => {})
+      .finally(() => {
         this.removeToken()
         this.removeUser()
-      })
-      .catch((error: AxiosError) => error.message) as Promise<void>
+      }) as Promise<void>
   }
 
   static getToken () {
@@ -60,7 +69,7 @@ export default class AuthService {
     this.removeToken()
   }
 
-  private static setConnectedUser (user: User): void {
+  public static setConnectedUser (user: User): void {
     localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user))
   }
 }
