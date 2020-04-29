@@ -5,7 +5,10 @@ import { handleErrorsGlobally, BusinessRuleEnforced } from '../error'
 import { FarmDetailsWithoutId } from '../models'
 import FarmService from '../services/farm-service'
 
-function OnboardingController (farmService: FarmService) {
+function OnboardingController (
+  authService: AuthenticationService,
+  farmService: FarmService
+) {
   const router = express.Router()
 
   router.post(
@@ -16,10 +19,7 @@ function OnboardingController (farmService: FarmService) {
           const {
             token,
             user: updatedUser
-          } = await AuthenticationService.completeOnboarding(
-            user.username,
-            req.body.name
-          )
+          } = await authService.completeOnboarding(user.username, req.body.name)
           await farmService.create(req.body)
           res.status(200).json({ token, user: updatedUser })
         } else {

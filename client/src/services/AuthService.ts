@@ -26,7 +26,7 @@ export default class AuthService {
       .then(result => {
         this.updateToken(result.data.token)
         this.setConnectedUser(result.data.user)
-      }) as Promise<void>
+      })
   }
 
   static async register (username: string, password: string): Promise<void> {
@@ -46,7 +46,7 @@ export default class AuthService {
       .finally(() => {
         this.removeToken()
         this.removeUser()
-      }) as Promise<void>
+      })
   }
 
   static getToken () {

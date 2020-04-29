@@ -24,7 +24,7 @@ export default {
     json(),
     typescript({ exclude: '/test/**', useTsconfigDeclarationDir: true }),
     commonjs(),
-    nodeResolve(),
+    nodeResolve({ preferBuiltins: true }),
     sourceMaps()
   ]
 }
