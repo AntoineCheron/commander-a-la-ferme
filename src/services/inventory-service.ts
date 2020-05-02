@@ -3,6 +3,7 @@ import { Pool } from 'pg'
 
 import { InventoryItem, InventoryItemWithoutId } from '../models'
 import { NotFound } from '../error'
+import { PsqlUtils } from '../utils'
 
 export default class InventoryService {
   constructor (private pool: Pool) {}
@@ -93,7 +94,7 @@ export default class InventoryService {
     pool: Pool
   ): Promise<void> {
     await pool.query(
-      `CREATE TABLE IF NOT EXISTS ${farmName}_inventory ( 
+      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(farmName)}_inventory ( 
         id VARCHAR(255) PRIMARY KEY, 
         title VARCHAR(255) NOT NULL,
         category VARCHAR(100) NOT NULL,
@@ -105,17 +106,23 @@ export default class InventoryService {
 }
 
 function ADD_ITEM_QUERY (farmName: string) {
-  return `INSERT INTO ${farmName}_inventory(id, title, category, price, remaining) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
+  return `INSERT INTO ${PsqlUtils.toDbStr(
+    farmName
+  )}_inventory(id, title, category, price, remaining) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
 }
 
 function GET_INVENTORY_QUERY (farmName: string) {
-  return `SELECT id, title, category, price, remaining FROM ${farmName}_inventory;`
+  return `SELECT id, title, category, price, remaining FROM ${PsqlUtils.toDbStr(
+    farmName
+  )}_inventory;`
 }
 
 function UPDATE_ITEM_QUERY (farmName: string) {
-  return `UPDATE ${farmName}_inventory SET title=$2, category=$3, price=$4, remaining=$5 WHERE id=$1;`
+  return `UPDATE ${PsqlUtils.toDbStr(
+    farmName
+  )}_inventory SET title=$2, category=$3, price=$4, remaining=$5 WHERE id=$1;`
 }
 
 function DELETE_ITEM_QUERY (farmName: string) {
-  return `DELETE FROM ${farmName}_inventory WHERE id=$1;`
+  return `DELETE FROM ${PsqlUtils.toDbStr(farmName)}_inventory WHERE id=$1;`
 }

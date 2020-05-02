@@ -16,4 +16,8 @@ export class PsqlUtils {
       return str.split(',')
     }
   }
+
+  public static toDbStr (str: string) {
+    return str.replace(' ', '_')
+  }
 }
