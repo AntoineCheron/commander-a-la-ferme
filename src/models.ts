@@ -102,6 +102,7 @@ export type OrderWithoutId = {
   email?: string
   address: string
   paymentMethod: string
+  customerComment?: string
   status: OrderStatus
   passedOn: Date
   completedOn?: Date

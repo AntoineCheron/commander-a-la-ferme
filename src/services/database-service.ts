@@ -35,7 +35,7 @@ class Database {
     const farmsCreateQuery = `CREATE TABLE IF NOT EXISTS farms (
       id VARCHAR(255) PRIMARY KEY, 
       name VARCHAR(100) UNIQUE NOT NULL, 
-      telephone VARCHAR(12) NOT NULL, 
+      telephone VARCHAR(30) NOT NULL, 
       address VARCHAR(100) NOT NULL, 
       description VARCHAR(1000), 
       paymentMethods VARCHAR(100) NOT NULL 

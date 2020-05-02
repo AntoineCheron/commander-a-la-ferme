@@ -58,7 +58,8 @@ export default class OrderService {
         order.fullname,
         order.telephone,
         order.address,
-        order.paymentMethod
+        order.paymentMethod,
+        order.customerComment
       ])
       const newOrderId = orderCreationRes.rows[0].id
 
@@ -126,7 +127,7 @@ export default class OrderService {
       `CREATE TABLE IF NOT EXISTS ${farmName}_orders ( 
         id SERIAL PRIMARY KEY,  
         fullname VARCHAR(40) NOT NULL, 
-        telephone VARCHAR(12) NOT NULL, 
+        telephone VARCHAR(30) NOT NULL, 
         address VARCHAR(100), 
         paymentMethod VARCHAR(30) NOT NULL, 
         status VARCHAR(30) DEFAULT 'new', 
@@ -156,6 +157,7 @@ function LIST_ORDERS_QUERY (farmName: string) {
       Orders.telephone as telephone,
       Orders.address as address,
       Orders.paymentmethod as paymentmethod,
+      Orders.customercomment as customercomment,
       Orders.status as status,
       Orders.passedon as passedon,
       Items.id as itemId,
@@ -174,6 +176,7 @@ function GET_ORDER_QUERY (farmName: string) {
     Orders.telephone as telephone, 
     Orders.address as address, 
     Orders.paymentMethod as paymentmethod, 
+    Orders.customerComment as customercomment, 
     Orders.status as status, 
     Orders.passedOn as passedon, 
     Items.id as itemid, 
@@ -187,7 +190,7 @@ function GET_ORDER_QUERY (farmName: string) {
 }
 
 function ADD_ORDER_QUERY (farmName: string) {
-  return `INSERT INTO ${farmName}_orders(fullname, telephone, address, paymentMethod) VALUES ($1, $2, $3, $4) RETURNING *;`
+  return `INSERT INTO ${farmName}_orders(fullname, telephone, address, paymentMethod, customerComment) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
 }
 
 // TODO: retrieve price from the DB instead
@@ -216,6 +219,7 @@ function extractOrder (row: any): Order {
     telephone: row.telephone,
     address: row.address,
     paymentMethod: row.paymentmethod,
+    customerComment: row.customercomment,
     status: row.status,
     passedOn: row.passedon,
     items: []

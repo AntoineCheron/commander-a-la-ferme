@@ -7,6 +7,7 @@ import FarmCard from '../my_farm/FarmCard'
 import OrderFormItemsSelector from './OrderFormItemsSelector'
 import OrderSummary from './OrderSummary'
 import OrderService from '../../services/OrderService'
+import ErrorResult from '../commons/ErrorResult'
 
 const { Title } = Typography
 
@@ -15,12 +16,14 @@ type Selection = { [category: string]: OrderableItem[] }
 const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
   const [validated, setValidated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState()
 
   const [fullname, setFullname] = useState<string>()
   const [telephone, setTelephone] = useState<string>()
   const [email, setEmail] = useState<string>()
   const [address, setAddress] = useState<string>()
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>()
+  const [customerComment, setCustomerComment] = useState<string>()
 
   const orderService = useMemo(() => new OrderService(), [])
 
@@ -30,7 +33,7 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
       title: item.title,
       category: item.category,
       price: item.price,
-      remaining: item.remaining,
+      remaining: (item.remaining - (item.ordered || 0)), // 02/05/2020 (item.ordered || 0) is used because item.ordered is not supported by the backend yet
       amount: 0
     }
   }).reduce((acc, item) => {
@@ -50,19 +53,26 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
         email,
         address,
         paymentMethod,
+        customerComment,
         items: selectedItems
       }
 
       orderService.create(farm.name, order)
         .then(() => {
-          setIsLoading(false)
           setValidated(true)
         })
+        .catch((error) => {
+          setValidated(false)
+          setError(error)
+        })
+        .finally(() => setIsLoading(false))
     }
   }
 
   if (validated) {
     return <OrderSuccessful farm={farm} selection={selectedItems} />
+  } else if (error) {
+    return <ErrorResult error={error} title="Oups, impossible de passer votre commande" />
   } else {
     return <>
       <Title>Passer commande à {farm.name}</Title>
@@ -71,6 +81,8 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
         <Row gutter={[16, 16]}>
           <FarmCard farm={farm} />
         </Row>
+
+        <OrderFormItemsSelector selection={selection} setSelection={setSelection} />
 
         <Title level={3}>Saisie de vos informations personnelles</Title>
 
@@ -92,7 +104,7 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
                 </Form.Item>
 
                 <Form.Item label="Adresse postale" rules={[{ required: true }]}>
-                  <Input placeholder="69 rue du Chemin Vert" value={address} onChange={e => setAddress(e.target.value)} />
+                  <Input placeholder="69 rue du Chemin Vert 01000 Ste Marie s/ Rouana" value={address} onChange={e => setAddress(e.target.value)} />
                 </Form.Item>
 
                 <Form.Item label="Moyen de paiement" rules={[{ required: true }]}>
@@ -103,12 +115,14 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
                   </Select>
                 </Form.Item>
 
+                <Form.Item name="personalComment" label="Commentaire à l'attention de l'exploitation">
+                  <Input.TextArea maxLength={1000} value={customerComment} onChange={e => setCustomerComment(e.target.value)} placeholder="Laissez un petit mot ici si vous avez besoin d'ajouter des précisions à votre commande." />
+                </Form.Item>
+
               </Form>
             </Card>
           </Col>
         </Row>
-
-        <OrderFormItemsSelector selection={selection} setSelection={setSelection} />
 
         <OrderSummary selection={selectedItems} />
 

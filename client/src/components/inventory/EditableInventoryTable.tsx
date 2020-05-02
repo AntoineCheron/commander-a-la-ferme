@@ -1,5 +1,6 @@
 import React, { useState, FunctionComponent, useEffect } from 'react'
-import { Form, Table } from 'antd'
+import { Button, Form, Table } from 'antd'
+import { EditOutlined, SaveOutlined } from '@ant-design/icons'
 
 import { InventoryItem } from '../../models'
 import EditableCell from './EditableCell'
@@ -49,13 +50,13 @@ const EditableInventoryTable: FunctionComponent<InventoryProps> = ({ items, edit
     {
       title: 'Quantité restante',
       dataIndex: 'remaining',
-      width: '15%',
+      width: '13%',
       editable: true,
     },
     {
       title: 'Commandés',
       dataIndex: 'ordered',
-      width: '15%',
+      width: '13%',
       editable: false,
     },
     {
@@ -65,16 +66,16 @@ const EditableInventoryTable: FunctionComponent<InventoryProps> = ({ items, edit
         const editable = isEditing(record)
         return editable ? (
           <span>
-            <a href="javascript:;" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
+            <Button icon={<SaveOutlined />} type="dashed" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
               Enregistrer
-            </a>
+            </Button>
 
-            <a href="javascript:;" onClick={cancel}>Annuler</a>
+            <Button type="dashed" onClick={cancel} danger>Annuler</Button>
           </span>
         ) : (
-            <a onClick={() => edit(record)}>
+            <Button icon={<EditOutlined />} type="dashed" onClick={() => edit(record)} style={{ marginRight: 8 }}>
               Modifier
-            </a>
+            </Button>
           )
       },
     },
