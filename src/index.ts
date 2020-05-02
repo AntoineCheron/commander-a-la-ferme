@@ -1,6 +1,5 @@
 import express from 'express'
 import path from 'path'
-const morgan = require('morgan')
 
 import { PORT } from './config'
 import RestApi from './rest-api'
@@ -17,9 +16,6 @@ pool
     database.createAllTables()
 
     const app = express()
-    app.use(
-      morgan(':method :url :status :res[content-length] - :response-time ms')
-    )
     app.use(express.json())
 
     app.use('/api', RestApi(pool))

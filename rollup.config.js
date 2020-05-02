@@ -23,8 +23,11 @@ export default {
   plugins: [
     json(),
     typescript({ exclude: '/test/**', useTsconfigDeclarationDir: true }),
-    commonjs(),
     nodeResolve({ preferBuiltins: true }),
+    commonjs({
+      include: ['node_modules/**'],
+      ignore: ['pg-native', './native']
+    }),
     sourceMaps()
   ]
 }

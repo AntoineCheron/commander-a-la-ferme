@@ -12,7 +12,7 @@ import {
 import OrderService from './orders-service'
 import InventoryService from './inventory-service'
 
-const bcrypt = require('bcrypt')
+import bcrypt from 'bcryptjs'
 
 type BearerToken = string
 

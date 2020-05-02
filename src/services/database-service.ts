@@ -1,5 +1,4 @@
-const { Pool } = require('pg')
-
+import pg from 'pg'
 import { ENV } from '../config'
 
 function getDbConfig () {
@@ -23,7 +22,7 @@ class Database {
   readonly pool: any
 
   public constructor () {
-    this.pool = new Pool(getDbConfig())
+    this.pool = new pg.Pool(getDbConfig())
     this.pool.on('connect', () => console.log('Opened new DB connection'))
   }
 
