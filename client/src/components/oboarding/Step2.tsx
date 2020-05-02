@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react'
 
 import BaseStepLayout from './BaseStepLayout'
 import { Form, Result, Alert } from 'antd'
-import FarmForm from '../my_farm/FarmFrom'
+import FarmForm from '../my_farm/FarmForm'
 import OnboardingService from '../../services/OnboardingService'
 import { useHistory } from 'react-router-dom'
 import { isAxiosError } from '../../errors'

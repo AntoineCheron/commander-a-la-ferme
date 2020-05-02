@@ -1,33 +1,39 @@
 import express from 'express'
 import path from 'path'
-import cors from 'cors'
-// import morgan from 'morgan'
-
-import restApi from './rest-api'
+const morgan = require('morgan')
 
 import { PORT } from './config'
+import RestApi from './rest-api'
+import Database from './services/database-service'
 
-const app = express()
+const database = new Database()
+const pool = database.pool
 
-// app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
-app.use(express.json())
+console.log('Connecting to the database...')
+pool
+  .connect()
+  .then(() => {
+    console.log('Create database tables')
+    database.createAllTables()
 
-app.use(
-  '/api',
-  cors({
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
-    preflightContinue: true
+    const app = express()
+    app.use(
+      morgan(':method :url :status :res[content-length] - :response-time ms')
+    )
+    app.use(express.json())
+
+    app.use('/api', RestApi(pool))
+    app.use(express.static(path.join(__dirname, '../client/build')))
+    app.get('*', (_, res) =>
+      res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'))
+    )
+
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
   })
-)
-
-app.use('/api', restApi)
-
-app.use(express.static(path.join(__dirname, '../client/build')))
-app.get('*', (_, res) =>
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'))
-)
-app.listen(PORT, function () {
-  console.log(`Server started on port ${PORT}`)
-})
+  .catch((error: Error) => {
+    console.error(
+      'Impossible to establish a connection with the database.\n',
+      error.stack
+    )
+    process.exit(0)
+  })

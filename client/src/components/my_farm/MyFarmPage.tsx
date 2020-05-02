@@ -26,7 +26,7 @@ const MyFarmPage: FunctionComponent<{}> = () => {
         errorTitle="Exploitation non trouvée"
         errorSubTitle="Désolé, nous n'avons pas trouvé votre exploitation."
       >
-        {(farm, refresh) => <>
+        {(farm) => <>
           <Row gutter={[16, 16]}>
             <Col span={24}>
               <Button type='primary' onClick={() => setIsEditing(true)}><EditOutlined /> Modifier</Button>

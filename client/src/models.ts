@@ -33,6 +33,7 @@ export type OrderRequest = {
   email?: string
   address: string
   paymentMethod: PaymentMethod
+  customerComment?: string
   items: OrderedItem[]
 }
 

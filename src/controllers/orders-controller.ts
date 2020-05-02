@@ -31,18 +31,18 @@ function OrdersController (orderService: OrderService) {
     )
   )
 
-  router.put(
-    '/orders/:orderId',
-    AuthenticationService.withAuth((req, res, user) =>
-      handleErrorsGlobally(async () => {
-        if (isOrderWithoutId(req.body)) {
-          const orderId = req.params.orderId
-          await orderService.updateOrder(orderId, req.body, user.farmName)
-          res.sendStatus(204)
-        }
-      }, res)
-    )
-  )
+  // router.put(
+  //   '/orders/:orderId',
+  //   AuthenticationService.withAuth((req, res, user) =>
+  //     handleErrorsGlobally(async () => {
+  //       if (isOrderWithoutId(req.body)) {
+  //         const orderId = req.params.orderId
+  //         await orderService.updateOrder(orderId, req.body, user.farmName)
+  //         res.sendStatus(204)
+  //       }
+  //     }, res)
+  //   )
+  // )
 
   router.put(
     '/orders/:orderId/complete',

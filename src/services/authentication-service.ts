@@ -1,20 +1,18 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { v4 as uuid } from 'uuid'
+import { Pool } from 'pg'
 
-import {
-  User,
-  PublicUser,
-  UserNotOnboarded,
-  UserWithPassword,
-  UserNotOnboardedWithPassword
-} from '../models'
+import { User, PublicUser, UserNotOnboarded } from '../models'
 import {
   WrongCredentialsException,
   BusinessRuleEnforced,
-  NotFound,
-  UnknownUserException
+  NotFound
 } from '../error'
+import OrderService from './orders-service'
+import InventoryService from './inventory-service'
+
+const bcrypt = require('bcrypt')
 
 type BearerToken = string
 
@@ -25,68 +23,70 @@ const SIGNIN_ALGORITHM_OPTIONS: jwt.SignOptions = {
 }
 
 export default class AuthenticationService {
-  private static users: UserWithPassword[] = [
-    new UserWithPassword('user-1', 'test', 'test', 'Bergerie de Bubertre')
-  ]
+  constructor (private pool: Pool) {}
 
-  private static usersNotOnboarded: UserNotOnboardedWithPassword[] = [
-    new UserNotOnboardedWithPassword('user-2', 'AntoineCheron', 'antoine')
-  ]
-
-  private static rejectedTokens: string[] = []
-
-  static generateToken (user: User | UserNotOnboarded): BearerToken {
+  private generateToken (user: User | UserNotOnboarded): BearerToken {
     return (
       'Bearer ' +
       jwt.sign(Object.assign({}, user), AUTH_SECRET, SIGNIN_ALGORITHM_OPTIONS)
     )
   }
 
-  static login (
+  async login (
     username: string,
     password: string
-  ): { token: BearerToken; user: PublicUser } {
-    const user =
-      this.users
-        .find(user => user.username === username && user.password === password)
-        ?.toUser() ||
-      this.usersNotOnboarded
-        .find(user => user.username === username && user.password === password)
-        ?.toUserNotOnboarded()
+  ): Promise<{ token: BearerToken; user: PublicUser }> {
+    try {
+      const res = await this.pool.query({
+        text:
+          'SELECT id, username, password, farmname FROM users WHERE username = $1;',
+        values: [username]
+      })
 
-    if (user) {
-      const token = this.generateToken(user)
-      return {
-        token,
-        user: user
+      if (res.rowCount === 1) {
+        const row = res.rows[0]
+        const isPasswordCorrect = await bcrypt.compare(password, row.password)
+
+        if (isPasswordCorrect) {
+          const user = new User(row.id, row.username, row.farmname)
+          const token = this.generateToken(user)
+          return { token, user: user }
+        } else {
+          throw new BusinessRuleEnforced('Le mot de passe est incorrect.')
+        }
+      } else if (res.rowCount === 0) {
+        throw new BusinessRuleEnforced("Le nom d'utilisateur est incorrect.")
+      } else {
+        throw new Error()
       }
-    } else {
-      throw new WrongCredentialsException()
+    } catch (error) {
+      // TODO: manage errors appropriately
+      throw error
     }
   }
 
-  static register (
+  async register (
     username: string,
     password: string
-  ): { token: string; user: UserNotOnboarded } {
-    if (this.users.find(user => user.username === username) === undefined) {
-      const newUser = new UserNotOnboardedWithPassword(
-        `user-${uuid()}`,
-        username,
-        password
-      )
-      this.usersNotOnboarded.push(newUser)
+  ): Promise<{ token: string; user: UserNotOnboarded }> {
+    const hashedPassword = await bcrypt.hash(password, 8)
+    const res = await this.pool.query({
+      text: `INSERT INTO users(id, username, password) SELECT $1, CAST($2 AS VARCHAR), $3 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username=$2) RETURNING * ;`,
+      values: [uuid(), username, hashedPassword]
+    })
+
+    if (res.rowCount === 1) {
+      const row = res.rows[0]
+      const newUser = new UserNotOnboarded(row.id, row.username)
       const token = this.generateToken(newUser)
       return { token, user: newUser }
-    } else {
+    } else if (res.rowCount === 0) {
       throw new BusinessRuleEnforced(
         "Ce nom d'utilisateur n'est pas disponible."
       )
+    } else {
+      throw new Error()
     }
-  }
-
-  static rejectToken (token: BearerToken) {
-    this.rejectedTokens.push(token.replace('Bearer ', ''))
   }
 
   static verifyToken (token: BearerToken): Promise<UserNotOnboarded | User> {
@@ -100,8 +100,6 @@ export default class AuthenticationService {
           const user = User.from(decoded) || UserNotOnboarded.from(decoded)
           if (user === undefined) {
             reject(new WrongCredentialsException('Inconsistent token'))
-          } else if (AuthenticationService.userDoesNotExist(user.username)) {
-            reject(new UnknownUserException())
           } else {
             resolve(user)
           }
@@ -110,35 +108,27 @@ export default class AuthenticationService {
     })
   }
 
-  static completeOnboarding (
-    username: string,
+  async completeOnboarding (
+    user: UserNotOnboarded,
     farmName: string
-  ): { token: string; user: User } {
-    const user = this.usersNotOnboarded.find(user => user.username === username)
-    if (user !== undefined) {
-      const index = this.usersNotOnboarded.indexOf(user)
-      this.usersNotOnboarded.splice(index, 1)
-      const updatedUser = new UserWithPassword(
-        user.id,
-        user.username,
-        user.password,
-        farmName
-      )
-      this.users.push(updatedUser)
+  ): Promise<{ token: string; user: User }> {
+    const res = await this.pool.query({
+      text: 'UPDATE users SET farmname=$2 WHERE username=$1;',
+      values: [user.username, farmName]
+    })
+
+    if (res.rowCount === 1) {
+      const updatedUser = new User(user.id, user.username, farmName)
+      await InventoryService.createTables(farmName, this.pool)
+      await OrderService.createTables(farmName, this.pool)
 
       const token = this.generateToken(updatedUser)
-      return { token, user: updatedUser.toUser() }
-    } else {
+      return { token, user: updatedUser }
+    } else if (res.rowCount === 0) {
       throw new NotFound()
+    } else {
+      throw new Error()
     }
-  }
-
-  private static userDoesNotExist (username: string): boolean {
-    return (
-      this.usersNotOnboarded.find(user => user.username === username) ===
-        undefined &&
-      this.users.find(user => user.username === username) === undefined
-    )
   }
 
   static withAuthBeforeOnboarding (
@@ -175,12 +165,12 @@ export default class AuthenticationService {
           ? authHeader.replace('Bearer ', '')
           : undefined
 
-        if (authToken && this.rejectedTokens.includes(authToken)) {
-          return res.redirect(401, '/api/login')
-        } else if (authToken !== undefined) {
+        if (authToken !== undefined) {
           return this.verifyToken(authToken)
             .then(user => callback(req, res, user))
             .catch(() => callback(req, res, undefined))
+        } else {
+          return res.redirect(401, '/api/login')
         }
       } else {
         return callback(req, res, undefined)

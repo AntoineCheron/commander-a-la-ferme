@@ -14,7 +14,7 @@ export type FarmFormInput = 'name' | 'telephone' | 'address' | 'paymentMethods' 
 
 const FarmForm: FunctionComponent<EditFarmProps> = ({ form, exclude, defaultValue }) => {
   return (
-    <Form form={form} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} layout="horizontal">
+    <Form form={form} initialValues={defaultValue} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} layout="horizontal">
 
       {!exclude?.includes('name') && <Form.Item name="name" label="Nom" rules={[{ required: true }]}>
         <Input placeholder="Le nom de votre exploitation" />
@@ -35,7 +35,7 @@ const FarmForm: FunctionComponent<EditFarmProps> = ({ form, exclude, defaultValu
       </Form.Item>}
 
       {!exclude?.includes('description') && <Form.Item name="description" label="Description" rules={[{ required: true }]}>
-        <Input.TextArea placeholder="Décrivez votre exploitation et votre processus de commande ici." />
+        <Input.TextArea maxLength={1000} placeholder="Décrivez votre exploitation et votre processus de commande ici." />
       </Form.Item>}
 
     </Form>
