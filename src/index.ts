@@ -8,12 +8,14 @@ import Database from './services/database-service'
 
 const database = new Database()
 const pool = database.pool
-pool.on('connect', () => database.createAllTables())
 
 console.log('Connecting to the database...')
 pool
   .connect()
   .then(() => {
+    console.log('Create database tables')
+    database.createAllTables()
+
     const app = express()
     app.use(
       morgan(':method :url :status :res[content-length] - :response-time ms')

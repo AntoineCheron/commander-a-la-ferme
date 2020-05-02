@@ -13,7 +13,7 @@ const RegisterPage: FunctionComponent<{}> = () => {
   const onFinish = (values: Store) => {
     AuthService.register(values.username, values.password)
       .then(() => setSuccess(true))
-      .catch(setErrorMessage)
+      .catch(error => setErrorMessage(error.message))
   }
 
   return (
@@ -97,6 +97,7 @@ const RegisterCard: FunctionComponent<{ errorMessage?: string, register: (values
               <Input value={username} onChange={e => setUsername(e.target.value)} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Nom d'utilisateur" />
             </Form.Item>
             <Form.Item
+              name="password"
               required
               validateStatus={passwordValidationError.status}
               help={passwordValidationError?.label}

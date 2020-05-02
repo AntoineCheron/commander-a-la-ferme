@@ -1,8 +1,8 @@
 import React, { useState, FunctionComponent, useMemo, useEffect } from 'react'
-import { Modal, Form, Alert, Result } from 'antd'
+import { Modal, Form, Alert, Result, Button } from 'antd'
 import { Farm } from '../../models'
 import FarmService from '../../services/FarmService'
-import FarmForm from './FarmFrom'
+import FarmForm from './FarmForm'
 
 export type EditFarmProps = {
   farmName: string,
@@ -19,7 +19,7 @@ const EditFarm: FunctionComponent<EditFarmProps> = ({ farmName, defaultValue, on
   const [error, setError] = useState<Error>()
   const [success, setSuccess] = useState<boolean>()
 
-  const handleOk = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const handleOk = () => {
     setIsLoading(true)
     const { telephone, address, paymentMethods, description } = form.getFieldsValue()
     farmService.update(farmName, telephone, address, paymentMethods, description)
@@ -36,11 +36,15 @@ const EditFarm: FunctionComponent<EditFarmProps> = ({ farmName, defaultValue, on
         title="Modifier les informations de mon exploitation"
         visible={true}
         onOk={handleOk}
-        onCancel={onCancel}
         width={700}
-        cancelText='Annuler'
-        okText='Modifier'
-        confirmLoading={isLoading}
+        footer={[
+          <Button key="back" onClick={onCancel} disabled={isLoading || error !== undefined || success} >
+            Annuler
+          </Button>,
+          <Button key="submit" type="primary" loading={isLoading} onClick={handleOk} disabled={isLoading || error !== undefined || success}>
+            Modifier
+          </Button>,
+        ]}
       >
         {(() => {
           if (success === undefined || success === false) {

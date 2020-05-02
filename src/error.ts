@@ -77,6 +77,11 @@ export async function handleErrorsGlobally (
   try {
     await f()
   } catch (error) {
-    res.status(toHttpStatus(error)).json(toHttpMessage(error))
+    const status = toHttpStatus(error)
+    res.status(status).json(toHttpMessage(error))
+
+    if (status === 500) {
+      console.error(error)
+    }
   }
 }

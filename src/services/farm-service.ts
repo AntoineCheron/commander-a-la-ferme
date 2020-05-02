@@ -1,4 +1,4 @@
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import { Pool } from 'pg'
 
 import { FarmDetails, FarmDetailsWithoutId } from '../models'
@@ -6,17 +6,6 @@ import { NotFound } from '../error'
 import { PsqlUtils } from '../utils'
 
 export default class FarmService {
-  // private farms: FarmDetails[] = [
-  //   {
-  //     id: '1',
-  //     name: 'Bergerie de Bubertre',
-  //     telephone: '02.02.02.02.02',
-  //     address: 'Route de la bergerie, 61190 Bubertré',
-  //     description: 'Bergerie qui vous propose des produits frais et bio',
-  //     paymentMethods: ['Carte Bancaire']
-  //   }
-  // ]
-
   constructor (private pool: Pool) {}
 
   public async getByName (farmName: string): Promise<FarmDetails> {
@@ -28,7 +17,7 @@ export default class FarmService {
       const res = await this.pool.query(query)
       if (res.rowCount === 1) {
         const row = res.rows[0]
-        return { ...row, paymentMethods: PsqlUtils.toArray(row.paymentMethods) }
+        return { ...row, paymentMethods: PsqlUtils.toArray(row.paymentmethods) }
       } else if (res.rowCount === 0) {
         throw new NotFound()
       } else {
@@ -56,10 +45,8 @@ export default class FarmService {
           PsqlUtils.formatArray(farm.paymentMethods)
         ]
       }
-      const res = await this.pool.query(query)
-      if (res.rowCount !== 1) {
-        throw new Error()
-      }
+
+      await this.pool.query(query)
     } catch (error) {
       // TODO: manage errors appropriately
       throw error
@@ -79,6 +66,7 @@ export default class FarmService {
         ]
       }
       const res = await this.pool.query(query)
+
       if (res.rowCount === 0) {
         throw new NotFound()
       } else if (res.rowCount !== 1) {
@@ -93,9 +81,9 @@ export default class FarmService {
 
 const SQL_QUERIES = {
   CREATE_FARM:
-    'INSERT INTO farms(id, name, telephone, address, description, paymentMethods) SELECT($1, $2, $3, $4, $5, $6) RETURNING * WHERE NOT EXISTS (SELECT $2 FROM farms WHERE name=$2);',
+    'INSERT INTO farms(id, name, telephone, address, description, paymentMethods) SELECT $1, CAST($2 AS VARCHAR), $3, $4, $5, $6 WHERE NOT EXISTS (SELECT 1 FROM farms WHERE name=$2) RETURNING *;',
   FIND_FARM_BY_NAME:
     'SELECT id, name, telephone, address, description, paymentMethods FROM farms WHERE name=$1;',
   UPDATE_FARM:
-    'UPDATE farm SET telephone=$2, address=$3, description=$4, paymentMethods=$5 WHERE name=$1;'
+    'UPDATE farms SET telephone=$2, address=$3, description=$4, paymentMethods=$5 WHERE name=$1;'
 }

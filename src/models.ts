@@ -75,10 +75,12 @@ export type PublicUser = {
 
 export type InventoryItem = BaseInventoryItem & {
   remaining: number
+  ordered: number
 }
 
-export type InventoryItemWithoutId = BaseInventoryItem & {
+export type InventoryItemWithoutId = BaseInventoryItemWithoutId & {
   remaining: number
+  ordered: number
 }
 
 export type OrderableItem = OrderedItem & { remaining: number }

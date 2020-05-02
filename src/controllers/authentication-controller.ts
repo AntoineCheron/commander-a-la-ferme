@@ -13,7 +13,7 @@ function AuthenticationController (authService: AuthenticationService) {
       if (utils.isAnyEmpty([username, password])) {
         throw new IncompleteRequestException()
       } else {
-        const result = authService.login(username, password)
+        const result = await authService.login(username, password)
         res.status(200).json(result)
       }
     }, res)
@@ -37,7 +37,7 @@ function AuthenticationController (authService: AuthenticationService) {
     handleErrorsGlobally(async () => {
       const { username, password } = req.body
       if (username !== undefined || password !== undefined) {
-        const tokenAndUser = authService.register(username, password)
+        const tokenAndUser = await authService.register(username, password)
         res.status(201).json(tokenAndUser)
       } else {
         res.status(400).json({

@@ -19,7 +19,8 @@ function OnboardingController (
           const {
             token,
             user: updatedUser
-          } = await authService.completeOnboarding(user.username, req.body.name)
+          } = await authService.completeOnboarding(user, req.body.name)
+
           await farmService.create(req.body)
           res.status(200).json({ token, user: updatedUser })
         } else {

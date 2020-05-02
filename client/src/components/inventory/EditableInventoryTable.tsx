@@ -65,14 +65,13 @@ const EditableInventoryTable: FunctionComponent<InventoryProps> = ({ items, edit
         const editable = isEditing(record)
         return editable ? (
           <span>
-            <a href="" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
+            <a href="javascript:;" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
               Enregistrer
             </a>
 
-            <a href="" onClick={cancel}>Annuler</a>
+            <a href="javascript:;" onClick={cancel}>Annuler</a>
           </span>
         ) : (
-            // <a disabled={editingKey !== ''} onClick={() => edit(record)}>
             <a onClick={() => edit(record)}>
               Modifier
             </a>

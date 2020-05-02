@@ -39,16 +39,16 @@ export default class AuthenticationService {
     try {
       const res = await this.pool.query({
         text:
-          'SELECT id, username, password, farmName FROM users WHERE id = $1;',
+          'SELECT id, username, password, farmname FROM users WHERE username = $1;',
         values: [username]
       })
 
       if (res.rowCount === 1) {
-        const row = res.rowCount[0]
+        const row = res.rows[0]
         const isPasswordCorrect = await bcrypt.compare(password, row.password)
 
         if (isPasswordCorrect) {
-          const user = new User(row.id, row.username, row.farmName)
+          const user = new User(row.id, row.username, row.farmname)
           const token = this.generateToken(user)
           return { token, user: user }
         } else {
@@ -69,10 +69,10 @@ export default class AuthenticationService {
     username: string,
     password: string
   ): Promise<{ token: string; user: UserNotOnboarded }> {
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 8)
     const res = await this.pool.query({
-      text: `INSERT INTO users(id, username, password) SELECT('${uuid()}', $1, $2) RETURNING * WHERE NOT EXISTS (SELECT $1 FROM users WHERE username=$1);`,
-      values: [username, hashedPassword]
+      text: `INSERT INTO users(id, username, password) SELECT $1, CAST($2 AS VARCHAR), $3 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username=$2) RETURNING * ;`,
+      values: [uuid(), username, hashedPassword]
     })
 
     if (res.rowCount === 1) {
@@ -109,29 +109,18 @@ export default class AuthenticationService {
   }
 
   async completeOnboarding (
-    username: string,
+    user: UserNotOnboarded,
     farmName: string
   ): Promise<{ token: string; user: User }> {
     const res = await this.pool.query({
-      text: `UPDATE users SET farmName=$2 WHERE username=$1;`,
-      values: [username, farmName]
+      text: 'UPDATE users SET farmname=$2 WHERE username=$1;',
+      values: [user.username, farmName]
     })
 
     if (res.rowCount === 1) {
-      const resUser = await (
-        await this.pool.query({
-          text: 'SELECT id, username, farmName FROM users WHERE username=$1;',
-          values: [username]
-        })
-      ).rows[0]
-      const updatedUser = new User(
-        resUser.id,
-        resUser.username,
-        resUser.farmName
-      )
-
-      OrderService.createTables(farmName, this.pool)
-      InventoryService.createTables(farmName, this.pool)
+      const updatedUser = new User(user.id, user.username, farmName)
+      await InventoryService.createTables(farmName, this.pool)
+      await OrderService.createTables(farmName, this.pool)
 
       const token = this.generateToken(updatedUser)
       return { token, user: updatedUser }
@@ -176,12 +165,12 @@ export default class AuthenticationService {
           ? authHeader.replace('Bearer ', '')
           : undefined
 
-        if (authToken) {
-          return res.redirect(401, '/api/login')
-        } else if (authToken !== undefined) {
+        if (authToken !== undefined) {
           return this.verifyToken(authToken)
             .then(user => callback(req, res, user))
             .catch(() => callback(req, res, undefined))
+        } else {
+          return res.redirect(401, '/api/login')
         }
       } else {
         return callback(req, res, undefined)

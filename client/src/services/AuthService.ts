@@ -1,14 +1,13 @@
 import { User } from '../models'
 
 import Http from './Http'
-import { AxiosError } from 'axios'
 
 const TOKEN_LOCAL_STORAGE_KEY = 'Authorization'
 const USER_LOCAL_STORAGE_KEY = 'user'
 
 export default class AuthService {
   static isAuthenticated (): boolean {
-    return this.getCurrentUser() !== undefined
+    return this.getToken() !== undefined && this.getToken() !== null
   }
 
   static getCurrentUser (): User | undefined {
@@ -21,22 +20,24 @@ export default class AuthService {
   }
 
   static async login (username: string, password: string): Promise<void> {
-    return Http.instance()
-      .post('/login', { username, password })
-      .then(result => {
-        this.updateToken(result.data.token)
-        this.setConnectedUser(result.data.user)
-      })
+    return this.loginOrRegister('login', username, password)
   }
 
   static async register (username: string, password: string): Promise<void> {
+    return this.loginOrRegister('register', username, password)
+  }
+
+  private static async loginOrRegister (
+    action: string,
+    username: string,
+    password: string
+  ): Promise<void> {
     return Http.instance()
-      .post('/register', { username, password })
+      .post('/' + action, { username, password })
       .then(result => {
         this.updateToken(result.data.token)
         this.setConnectedUser(result.data.user)
       })
-      .catch((error: AxiosError) => error.message) as Promise<void>
   }
 
   static logout (): Promise<void> {
