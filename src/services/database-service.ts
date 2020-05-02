@@ -22,6 +22,7 @@ class Database {
   readonly pool: any
 
   public constructor () {
+    console.log(getDbConfig())
     this.pool = new pg.Pool(getDbConfig())
     this.pool.on('connect', () => console.log('Opened new DB connection'))
   }
