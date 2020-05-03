@@ -9,8 +9,6 @@ import {
   BusinessRuleEnforced,
   NotFound
 } from '../error'
-import OrderService from './orders-service'
-import InventoryService from './inventory-service'
 
 import bcrypt from 'bcryptjs'
 import { PsqlUtils } from '../utils'
