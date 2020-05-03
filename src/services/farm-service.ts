@@ -12,7 +12,7 @@ export default class FarmService {
     try {
       const query = {
         text: SQL_QUERIES.FIND_FARM_BY_NAME,
-        values: [farmName]
+        values: [PsqlUtils.toDbStr(farmName)]
       }
       const res = await this.pool.query(query)
       if (res.rowCount === 1) {
@@ -22,7 +22,9 @@ export default class FarmService {
         throw new NotFound()
       } else {
         console.error(
-          `Found more than one farm with name ${farmName}. This should never happen. Please FIX.`
+          `Found more than one farm with name ${PsqlUtils.toDbStr(
+            farmName
+          )}. This should never happen. Please FIX.`
         )
         throw new Error()
       }

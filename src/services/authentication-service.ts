@@ -12,7 +12,8 @@ import {
 import OrderService from './orders-service'
 import InventoryService from './inventory-service'
 
-const bcrypt = require('bcrypt')
+import bcrypt from 'bcryptjs'
+import { PsqlUtils } from '../utils'
 
 type BearerToken = string
 
@@ -114,7 +115,7 @@ export default class AuthenticationService {
   ): Promise<{ token: string; user: User }> {
     const res = await this.pool.query({
       text: 'UPDATE users SET farmname=$2 WHERE username=$1;',
-      values: [user.username, farmName]
+      values: [user.username, PsqlUtils.toDbStr(farmName)]
     })
 
     if (res.rowCount === 1) {

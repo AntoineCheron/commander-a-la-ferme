@@ -1,18 +1,29 @@
-const { Pool } = require('pg')
+import pg from 'pg'
+import { ENV } from '../config'
 
-class Database {
-  readonly pool: any
-
-  public constructor () {
-    this.pool = new Pool({
+function getDbConfig () {
+  if (ENV === 'dev') {
+    return {
       user: 'postgres',
       host: 'localhost',
       database: 'commanderalaferme',
       password: 'pass',
       port: 5432
-    })
+    }
+  } else {
+    return {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    }
+  }
+}
 
-    this.pool.on('connect', () => console.log('Connected to the db'))
+class Database {
+  readonly pool: any
+
+  public constructor () {
+    this.pool = new pg.Pool(getDbConfig())
+    this.pool.on('connect', () => console.log('Opened new DB connection'))
   }
 
   public createAllTables (): void {

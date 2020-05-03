@@ -2,6 +2,7 @@ import { Pool } from 'pg'
 
 import { Order, OrderWithoutId, OrderedItem } from '../models'
 import { NotFound } from '../error'
+import { PsqlUtils } from '../utils'
 
 export default class OrderService {
   constructor (private pool: Pool) {}
@@ -124,7 +125,7 @@ export default class OrderService {
 
   public static async createTables (farmName: string, pool: Pool) {
     await pool.query(
-      `CREATE TABLE IF NOT EXISTS ${farmName}_orders ( 
+      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(farmName)}_orders ( 
         id SERIAL PRIMARY KEY,  
         fullname VARCHAR(40) NOT NULL, 
         telephone VARCHAR(30) NOT NULL, 
@@ -137,9 +138,15 @@ export default class OrderService {
     )
 
     await pool.query(
-      `CREATE TABLE IF NOT EXISTS ${farmName}_ordered_items ( 
-        id VARCHAR(255) REFERENCES ${farmName}_inventory(id), 
-        order_id INTEGER NOT NULL REFERENCES ${farmName}_orders(id),
+      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(
+        farmName
+      )}_ordered_items ( 
+        id VARCHAR(255) REFERENCES ${PsqlUtils.toDbStr(
+          farmName
+        )}_inventory(id), 
+        order_id INTEGER NOT NULL REFERENCES ${PsqlUtils.toDbStr(
+          farmName
+        )}_orders(id),
         title VARCHAR(255) NOT NULL, 
         category VARCHAR(100), 
         price NUMERIC(7,2) NOT NULL, 
@@ -165,8 +172,10 @@ function LIST_ORDERS_QUERY (farmName: string) {
       Items.category as itemtategory,
       Items.price as itemprice,
       Items.amount as itemamount
-    FROM ${farmName}_orders AS Orders
-    INNER JOIN ${farmName}_ordered_items AS Items ON Orders.id = Items.order_id ; `
+    FROM ${PsqlUtils.toDbStr(farmName)}_orders AS Orders
+    INNER JOIN ${PsqlUtils.toDbStr(
+      farmName
+    )}_ordered_items AS Items ON Orders.id = Items.order_id ; `
 }
 
 function GET_ORDER_QUERY (farmName: string) {
@@ -184,22 +193,30 @@ function GET_ORDER_QUERY (farmName: string) {
     Items.category as itemcategory, 
     Items.price as itemprice, 
     Items.amount as itemamount 
-  FROM ${farmName}_orders AS Orders 
-  INNER JOIN ${farmName}_ordered_items AS Items ON Orders.id = Items.order_id 
+  FROM ${PsqlUtils.toDbStr(farmName)}_orders AS Orders 
+  INNER JOIN ${PsqlUtils.toDbStr(
+    farmName
+  )}_ordered_items AS Items ON Orders.id = Items.order_id 
   WHERE Orders.id = $1;`
 }
 
 function ADD_ORDER_QUERY (farmName: string) {
-  return `INSERT INTO ${farmName}_orders(fullname, telephone, address, paymentMethod, customerComment) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
+  return `INSERT INTO ${PsqlUtils.toDbStr(
+    farmName
+  )}_orders(fullname, telephone, address, paymentMethod, customerComment) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
 }
 
 // TODO: retrieve price from the DB instead
 function ADD_ORDER_ITEM_QUERY (farmName: string) {
-  return `INSERT INTO ${farmName}_ordered_items(id, order_id, title, category, price, amount) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`
+  return `INSERT INTO ${PsqlUtils.toDbStr(
+    farmName
+  )}_ordered_items(id, order_id, title, category, price, amount) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`
 }
 
 function UPDATE_ORDER_STATUS_QUERY (farmName: string) {
-  return `UPDATE ${farmName}_orders SET status=$2 WHERE id=$1;`
+  return `UPDATE ${PsqlUtils.toDbStr(
+    farmName
+  )}_orders SET status=$2 WHERE id=$1;`
 }
 
 function extractItem (row: any): OrderedItem {
