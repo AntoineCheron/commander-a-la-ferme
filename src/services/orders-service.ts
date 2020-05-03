@@ -173,11 +173,15 @@ function ADD_ORDER_QUERY (farmName: string) {
   )}_orders(fullname, telephone, address, paymentMethod, customerComment) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
 }
 
-// TODO: retrieve price from the DB instead
 function ADD_ORDER_ITEM_QUERY (farmName: string) {
-  return `INSERT INTO ${PsqlUtils.toDbStr(
-    farmName
-  )}_ordered_items(id, order_id, title, category, price, amount) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`
+  return `
+  INSERT INTO ${PsqlUtils.toDbStr(farmName)}_ordered_items 
+    ( id, order_id, title, category, price, amount ) 
+    SELECT $1, $2, title, category, price, $3
+    FROM ${PsqlUtils.toDbStr(farmName)}_inventory inventory 
+    WHERE inventory.id = $1
+    RETURNING *
+  ;`
 }
 
 function UPDATE_ORDER_STATUS_QUERY (farmName: string) {
