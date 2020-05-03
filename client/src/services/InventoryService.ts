@@ -19,4 +19,11 @@ export default class InventoryService {
     delete copy['id']
     await Http.instance().put(`/inventory/${item.id}`, copy)
   }
+
+  public async updateCategoryName (
+    previousName: string,
+    newName: string
+  ): Promise<void> {
+    await Http.instance().put('/inventory/category', { previousName, newName })
+  }
 }

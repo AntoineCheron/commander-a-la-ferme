@@ -73,6 +73,27 @@ export default class InventoryService {
     }
   }
 
+  public async updateCategory (
+    farmName: string,
+    previousName: string,
+    newName: string
+  ): Promise<void> {
+    try {
+      const query = {
+        text: UPDATE_CATEGORY_NAME_QUERY(farmName),
+        values: [previousName, newName]
+      }
+
+      const res = await this.pool.query(query)
+      if (res.rowCount === 0) {
+        throw new NotFound()
+      }
+    } catch (error) {
+      // TODO: manage errors appropriately
+      throw error
+    }
+  }
+
   public async deleteItem (itemId: string, farmName: string): Promise<void> {
     try {
       const query = {
@@ -108,6 +129,12 @@ function UPDATE_ITEM_QUERY (farmName: string) {
   return `UPDATE ${PsqlUtils.toDbStr(
     farmName
   )}_inventory SET title=$2, category=$3, price=$4, remaining=$5 WHERE id=$1;`
+}
+
+function UPDATE_CATEGORY_NAME_QUERY (farmName: string) {
+  return `UPDATE ${PsqlUtils.toDbStr(
+    farmName
+  )}_inventory SET category=$2 WHERE category=$1;`
 }
 
 function DELETE_ITEM_QUERY (farmName: string) {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, FunctionComponent } from 'react'
+import React, { useState, useMemo, FunctionComponent, useCallback, useEffect } from 'react'
 import { message, Skeleton, Typography } from 'antd'
 import { AxiosError } from 'axios'
 
@@ -18,13 +18,15 @@ const InventoryPage: FunctionComponent<{}> = () => {
   const [error, setError] = useState<AxiosError>()
   const [items, setItems] = useState<InventoryItem[]>([])
 
-  useEffectWrapper((isMounted) => {
+  const fetch = useCallback(() => {
     setIsLoading(true)
     inventoryService.getInventory()
-      .then(data => { if (isMounted) setItems(data) })
-      .catch(error => { if (isMounted) setError(error) })
-      .finally(() => { if (isMounted) setIsLoading(false) })
+      .then(setItems)
+      .catch(setError)
+      .finally(() => setIsLoading(false))
   }, [])
+
+  useEffect(() => fetch(), [])
 
   const addItem = (category: string) => {
     const itemId = `pending-${genRandomNumber()}`
@@ -65,7 +67,7 @@ const InventoryPage: FunctionComponent<{}> = () => {
       {
         isLoading ? <Skeleton active />
           : error !== undefined ? <ErrorResult error={error} title="Impossible de charger l'inventaire" />
-            : <Inventory items={items} addItem={addItem} editItem={editItem} />
+            : <Inventory items={items} addItem={addItem} editItem={editItem} refresh={fetch} />
       }
 
     </AppLayout>)

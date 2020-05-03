@@ -116,7 +116,7 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
                 </Form.Item>
 
                 <Form.Item name="personalComment" label="Commentaire à l'attention de l'exploitation">
-                  <Input.TextArea maxLength={1000} value={customerComment} onChange={e => setCustomerComment(e.target.value)} placeholder="Laissez un petit mot ici si vous avez besoin d'ajouter des précisions à votre commande." />
+                  <Input.TextArea maxLength={1000} rows={4} value={customerComment} onChange={e => setCustomerComment(e.target.value)} placeholder="Laissez un petit mot ici si vous avez besoin d'ajouter des précisions à votre commande." />
                 </Form.Item>
 
               </Form>

@@ -32,6 +32,21 @@ function InventoryController (
   )
 
   router.put(
+    '/inventory/category',
+    AuthenticationService.withAuth((req, res, user) =>
+      handleErrorsGlobally(async () => {
+        const { previousName, newName } = req.body
+        await inventoryService.updateCategory(
+          user.farmName,
+          previousName,
+          newName
+        )
+        res.sendStatus(204)
+      }, res)
+    )
+  )
+
+  router.put(
     '/inventory/:itemId',
     AuthenticationService.withAuth((req, res, user) =>
       handleErrorsGlobally(async () => {

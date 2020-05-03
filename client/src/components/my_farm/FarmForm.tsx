@@ -35,7 +35,7 @@ const FarmForm: FunctionComponent<EditFarmProps> = ({ form, exclude, defaultValu
       </Form.Item>}
 
       {!exclude?.includes('description') && <Form.Item name="description" label="Description" rules={[{ required: true }]}>
-        <Input.TextArea maxLength={1000} placeholder="Décrivez votre exploitation et votre processus de commande ici." />
+        <Input.TextArea rows={4} maxLength={1000} placeholder="Décrivez votre exploitation et votre processus de commande ici." />
       </Form.Item>}
 
     </Form>
