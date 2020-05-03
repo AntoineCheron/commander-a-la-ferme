@@ -96,7 +96,7 @@ class Database {
         title VARCHAR(255) NOT NULL, 
         category VARCHAR(100), 
         price NUMERIC(7,2) NOT NULL, 
-        amount INTEGER NOT NULL, 
+        amount NUMERIC(7,2) NOT NULL, 
         PRIMARY KEY(id, order_id)
       ); `
     )

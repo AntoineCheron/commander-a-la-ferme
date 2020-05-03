@@ -11,7 +11,9 @@ export default class InventoryService {
   public async getInventory (farmName: string): Promise<InventoryItem[]> {
     try {
       const res = await this.pool.query(GET_INVENTORY_QUERY(farmName))
-      return res.rows
+      return res.rows.map(row => {
+        return { ...row, ordered: row.ordered || 0 }
+      })
     } catch (error) {
       // TODO: manage errors appropriately
       throw error
@@ -30,7 +32,7 @@ export default class InventoryService {
       const res = await this.pool.query(query)
       if (res.rowCount === 1) {
         const row = res.rows[0]
-        return { ...row, remaining: -1 }
+        return { ...row, ordered: 0 }
       } else {
         throw new Error()
       }

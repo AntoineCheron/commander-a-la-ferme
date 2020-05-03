@@ -124,7 +124,7 @@ const OrderForm: FunctionComponent<{ farm: Farm }> = ({ farm }) => {
           </Col>
         </Row>
 
-        <OrderSummary selection={selectedItems} />
+        <OrderSummary selection={selectedItems} farmName={farm.name} />
 
         <Button type="primary" htmlType="submit" onClick={validateOrder} disabled={selectedItems.length === 0 || !(fullname && telephone && address && paymentMethod)}>
           <CheckOutlined /> Valider ma commande
