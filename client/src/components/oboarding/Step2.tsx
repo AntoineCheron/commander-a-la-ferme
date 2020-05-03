@@ -1,11 +1,12 @@
 import React, { useMemo, useState, useEffect } from 'react'
 
 import BaseStepLayout from './BaseStepLayout'
-import { Form, Result, Alert } from 'antd'
+import { Form, Result } from 'antd'
 import FarmForm from '../my_farm/FarmForm'
 import OnboardingService from '../../services/OnboardingService'
 import { useHistory } from 'react-router-dom'
 import { isAxiosError } from '../../errors'
+import ErrorAlert from '../commons/ErrorAlert'
 
 const Step2: React.FC<{}> = () => {
   const history = useHistory()
@@ -37,7 +38,7 @@ const Step2: React.FC<{}> = () => {
       if (success === undefined || success === false) {
         return <>
           <FarmForm form={form} />
-          <ErrorComponent error={error} success={success} />
+          <ErrorAlert error={error} success={success} />
         </>
       } else {
         return <Result status="success" title="Exploitation créée avec succès" />
@@ -45,18 +46,6 @@ const Step2: React.FC<{}> = () => {
     })()
     }
   </BaseStepLayout>
-}
-
-const ErrorComponent: React.FC<{ error?: Error, success?: boolean }> = ({ error, success }) => {
-  if (error || success === false) {
-    return <Alert
-      message="Erreur"
-      description={error?.message || 'Une erreur inconnue s\'est produite'}
-      type="error"
-      showIcon />
-  } else {
-    return null
-  }
 }
 
 export default Step2

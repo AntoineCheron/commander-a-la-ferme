@@ -21,7 +21,7 @@ const Order: FunctionComponent<{}> = () => {
       errorSubTitle="Désolé, nous n'avons pas trouvé cette commande."
       errorExtra={<Button type="primary" onClick={() => history.goBack()}>Retourner à la page précédente</Button>}
     >
-      {order => <OrderDetails order={order} />}
+      {(order, refresh) => <OrderDetails order={order} refresh={refresh} />}
     </Fetch>
   </AppLayout>
 }

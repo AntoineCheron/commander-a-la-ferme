@@ -1,4 +1,4 @@
-import { Order, OrderRequest } from '../models'
+import { Order, OrderRequest, OrderStatus } from '../models'
 import Http from './Http'
 
 export default class OrderService {
@@ -14,6 +14,13 @@ export default class OrderService {
 
   public async create (farmName: string, order: OrderRequest): Promise<void> {
     return await Http.instance().post(`/orders/${farmName}`, order)
+  }
+
+  public async updateStatus (
+    orderId: string,
+    status: OrderStatus
+  ): Promise<void> {
+    return await Http.instance().put(`/orders/${orderId}/status`, { status })
   }
 
   private retype (order: Order): Order {

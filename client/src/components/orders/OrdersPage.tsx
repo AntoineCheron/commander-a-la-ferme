@@ -13,7 +13,6 @@ import OrderingFormUrlAlert from './OrderingFormUrlAlert'
 const { Title } = Typography
 
 const OrdersPage: FunctionComponent<{}> = () => {
-  const path = window.location.pathname
   return (
     <AppLayout>
       <Title>Commandes</Title>
@@ -23,23 +22,23 @@ const OrdersPage: FunctionComponent<{}> = () => {
       </Row>
 
       <Switch>
-        <Route path={[path, path + "/nouvelles"]} exact>
+        <Route path={['/app/commandes', "/app/commandes/nouvelles"]} exact>
           <Orders statusFilter={['nouvelle']} activeKey="new" />
         </Route>
 
-        <Route path={[path, path + "/a-preparer"]} exact>
+        <Route path='/app/commandes/a-preparer' exact>
           <Orders statusFilter={['acceptée', 'en cours de préparation']} activeKey="todo" />
         </Route>
 
-        <Route path={`${path}/terminees`} exact>
+        <Route path='/app/commandes/terminees' exact>
           <Orders statusFilter={['complétée', 'livrée', 'annulée']} activeKey="done" />
         </Route>
 
-        <Route path={`${path}/toutes`} exact>
+        <Route path='/app/commandes/toutes' exact>
           <Orders activeKey="all" />
         </Route>
 
-        <Route path={`${path}`} ><Redirect to={`${path}`} /></Route>
+        <Route path={'/app/commandes/*'} ><Redirect to={'/app/commandes'} /></Route>
       </Switch>
     </AppLayout>)
 }

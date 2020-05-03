@@ -1,6 +1,6 @@
 import { Pool } from 'pg'
 
-import { Order, OrderWithoutId, OrderedItem } from '../models'
+import { Order, OrderWithoutId, OrderedItem, OrderStatus } from '../models'
 import { NotFound } from '../error'
 import { PsqlUtils } from '../utils'
 
@@ -102,20 +102,19 @@ export default class OrderService {
   //   }
   // }
 
-  public async completeOrder (
+  public async updateStatus (
     orderId: string,
+    status: OrderStatus,
     farmName: string
   ): Promise<void> {
     try {
       const query = {
         text: UPDATE_ORDER_STATUS_QUERY(farmName),
-        values: [orderId, 'completed']
+        values: [orderId, status]
       }
       const res = await this.pool.query(query)
       if (res.rowCount === 0) {
         throw new NotFound()
-      } else {
-        throw new Error()
       }
     } catch (error) {
       // TODO: manage errors appropriately

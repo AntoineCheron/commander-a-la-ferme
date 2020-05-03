@@ -1,15 +1,22 @@
-import React, { FunctionComponent } from 'react'
-import { Button, Card, Descriptions, Col, Row, Statistic, Tag, Typography, Tooltip } from 'antd'
+import React, { useState, FunctionComponent } from 'react'
+import { Button, Card, Descriptions, Col, Row, Statistic, Typography, Tooltip } from 'antd'
 import { CalendarOutlined, CreditCardOutlined, CommentOutlined, DownloadOutlined, EditOutlined, FlagOutlined, HomeOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons'
 
 import { Order } from '../../models'
 import OrderedItemsList from './OrderedItemsList'
 import StatusTag from './StatusTag'
+import UpdateStatusModal from './UpdateStatusModal'
 
 const { Title, Text } = Typography
 
-const OrderDetails: FunctionComponent<{ order: Order }> = ({ order }) => {
+const ACTIONS = {
+  UPDATE_STATUS: 'update-status'
+}
+
+const OrderDetails: FunctionComponent<{ order: Order, refresh: () => void }> = ({ order, refresh }) => {
   const orderPrice = order.items.map(item => item.price * item.amount).reduce((sum, value) => sum + value, 0)
+
+  const [activeAction, setActiveAction] = useState<string>()
 
   return <>
     <Title>Commande n°{order.id}</Title>
@@ -41,9 +48,7 @@ const OrderDetails: FunctionComponent<{ order: Order }> = ({ order }) => {
         <Card style={{ height: '100%' }}>
           <Title level={4}>Actions</Title>
 
-          <Tooltip title="Cette fonctionnalité n'est pas encore disponible">
-            <Button type="primary" disabled icon={<EditOutlined />} style={{ marginBottom: '16px' }}> Modifier le statut</Button>
-          </Tooltip>
+          <Button type="primary" icon={<EditOutlined />} style={{ marginBottom: '16px' }} onClick={() => setActiveAction(ACTIONS.UPDATE_STATUS)}> Modifier le statut</Button>
 
           <Tooltip title="Cette fonctionnalité n'est pas encore disponible">
             <Button type="primary" disabled icon={<DownloadOutlined />} style={{ marginBottom: '16px' }}> Télécharger au format Excel</Button>
@@ -57,6 +62,12 @@ const OrderDetails: FunctionComponent<{ order: Order }> = ({ order }) => {
         <OrderedItemsList items={order.items} />
       </Col>
     </Row>
+
+    {
+      activeAction === ACTIONS.UPDATE_STATUS
+        ? <UpdateStatusModal orderId={order.id} initialValue={order.status} onSuccess={() => { setActiveAction(undefined); refresh(); }} />
+        : null
+    }
   </>
 }
 

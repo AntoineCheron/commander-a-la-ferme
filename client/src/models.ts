@@ -61,6 +61,15 @@ export type OrderStatus =
   | 'livrée'
   | 'annulée'
 
+export const ORDER_STATUS: OrderStatus[] = [
+  'nouvelle',
+  'acceptée',
+  'en cours de préparation',
+  'complétée',
+  'livrée',
+  'annulée'
+]
+
 export type User = UserNotOnboarded & {
   farmName: string
 }

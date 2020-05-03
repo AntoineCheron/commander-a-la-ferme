@@ -6,7 +6,7 @@ import Loader from './Loader'
 
 type Props<T> = {
   fct: () => Promise<T>
-  children: (t: T, refresh?: () => void) => ReactNode
+  children: (t: T, refresh: () => void) => ReactNode
   loadTitle?: string
   errorTitle?: string
   errorSubTitle?: string

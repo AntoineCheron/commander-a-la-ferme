@@ -45,11 +45,11 @@ function OrdersController (orderService: OrderService) {
   // )
 
   router.put(
-    '/orders/:orderId/complete',
+    '/orders/:orderId/status',
     AuthenticationService.withAuth((req, res, user) =>
       handleErrorsGlobally(async () => {
         const orderId = req.params.orderId
-        await orderService.completeOrder(orderId, user.farmName)
+        await orderService.updateStatus(orderId, req.body.status, user.farmName)
         res.sendStatus(204)
       }, res)
     )
