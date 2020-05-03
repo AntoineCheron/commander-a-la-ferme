@@ -9,8 +9,17 @@ export type Farm = {
   inventory: InventoryItem[]
 }
 
-export type PaymentMethod = 'Carte Bancaire' | 'Espèces' | 'Chèque'
-export const PAYMENT_METHODS = ['Carte Bancaire', 'Espèces', 'Chèque']
+export type PaymentMethod =
+  | 'Carte Bancaire'
+  | 'Espèces'
+  | 'Chèque'
+  | 'Virement Bancaire'
+export const PAYMENT_METHODS = [
+  'Carte Bancaire',
+  'Espèces',
+  'Chèque',
+  'Virement Bancaire'
+]
 
 export type InventoryItem = BaseInventoryItem & {
   remaining: number
@@ -44,14 +53,13 @@ export type OrderWithoutId = OrderRequest & {
   completedOn?: Date
 }
 
-export type OrderStatus = 'new' | 'in-progress' | 'completed' | 'canceled'
-
-export const statusColor = {
-  new: '#2db7f5',
-  'in-progress': '',
-  completed: '#87d068',
-  canceled: '#108ee9'
-}
+export type OrderStatus =
+  | 'nouvelle'
+  | 'acceptée'
+  | 'en cours de préparation'
+  | 'complétée'
+  | 'livrée'
+  | 'annulée'
 
 export type User = UserNotOnboarded & {
   farmName: string

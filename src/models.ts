@@ -109,7 +109,13 @@ export type OrderWithoutId = {
   items: OrderedItem[]
 }
 
-export type OrderStatus = 'new' | 'in-progress' | 'completed' | 'canceled'
+export type OrderStatus =
+  | 'nouvelle'
+  | 'acceptée'
+  | 'en cours de préparation'
+  | 'complétée'
+  | 'livrée'
+  | 'annulée'
 
 export type FarmDetailsWithoutId = {
   name: string
@@ -123,4 +129,8 @@ export type FarmDetails = FarmDetailsWithoutId & {
   id: string
 }
 
-export type PaymentMethod = 'Carte Bancaire' | 'Espèces' | 'Chèque'
+export type PaymentMethod =
+  | 'Carte Bancaire'
+  | 'Espèces'
+  | 'Chèque'
+  | 'Virement Bancaire'

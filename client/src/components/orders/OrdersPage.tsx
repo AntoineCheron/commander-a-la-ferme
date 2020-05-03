@@ -23,12 +23,16 @@ const OrdersPage: FunctionComponent<{}> = () => {
       </Row>
 
       <Switch>
+        <Route path={[path, path + "/nouvelles"]} exact>
+          <Orders statusFilter={['nouvelle']} activeKey="new" />
+        </Route>
+
         <Route path={[path, path + "/a-preparer"]} exact>
-          <Orders statusFilter={['new', 'in-progress']} activeKey="todo" />
+          <Orders statusFilter={['acceptée', 'en cours de préparation']} activeKey="todo" />
         </Route>
 
         <Route path={`${path}/terminees`} exact>
-          <Orders statusFilter={['completed', 'canceled']} activeKey="done" />
+          <Orders statusFilter={['complétée', 'livrée', 'annulée']} activeKey="done" />
         </Route>
 
         <Route path={`${path}/toutes`} exact>
@@ -47,14 +51,16 @@ const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }>
   const filterOrders = (orders: Order[]) => orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
 
   const handleModeChange = (e: RadioChangeEvent) => {
-    const targetUrl = e.target.value === 'todo' ? '/app/commandes/a-preparer'
-      : e.target.value === 'done' ? '/app/commandes/terminees'
-        : '/app/commandes/toutes'
+    const targetUrl = e.target.value === 'new' ? '/app/commandes/nouvelles'
+      : e.target.value === 'todo' ? '/app/commandes/a-preparer'
+        : e.target.value === 'done' ? '/app/commandes/terminees'
+          : '/app/commandes/toutes'
     history.push(targetUrl)
   }
 
   return <>
     <Radio.Group onChange={handleModeChange} value={activeKey} style={{ marginBottom: 8 }}>
+      <Radio.Button value="new">Nouvelles</Radio.Button>
       <Radio.Button value="todo">A préparer</Radio.Button>
       <Radio.Button value="done">Terminées</Radio.Button>
       <Radio.Button value="all">Toutes</Radio.Button>

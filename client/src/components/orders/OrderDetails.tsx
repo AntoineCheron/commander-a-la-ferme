@@ -2,8 +2,9 @@ import React, { FunctionComponent } from 'react'
 import { Button, Card, Descriptions, Col, Row, Statistic, Tag, Typography, Tooltip } from 'antd'
 import { CalendarOutlined, CreditCardOutlined, CommentOutlined, DownloadOutlined, EditOutlined, FlagOutlined, HomeOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons'
 
-import { Order, statusColor } from '../../models'
+import { Order } from '../../models'
 import OrderedItemsList from './OrderedItemsList'
+import StatusTag from './StatusTag'
 
 const { Title, Text } = Typography
 
@@ -23,7 +24,7 @@ const OrderDetails: FunctionComponent<{ order: Order }> = ({ order }) => {
             <Descriptions.Item label={<Text><CalendarOutlined /> Passée le</Text>}>{order.passedOn.toLocaleDateString()}</Descriptions.Item>
             <Descriptions.Item label={<Text><HomeOutlined /> Adresse</Text>}>{order.address}</Descriptions.Item>
             <Descriptions.Item label={<Text><CreditCardOutlined /> Moyen de paiement</Text>}>{order.paymentMethod}</Descriptions.Item>
-            <Descriptions.Item label={<Text><FlagOutlined /> Statut</Text>}><Tag color={statusColor[order.status]}>{order.status.toUpperCase()}</Tag></Descriptions.Item>
+            <Descriptions.Item label={<Text><FlagOutlined /> Statut</Text>}><StatusTag status={order.status} /></Descriptions.Item>
             {order.customerComment && <Descriptions.Item span={2} label={<Text><CommentOutlined /> Commentaire du client</Text>}>{order.customerComment}</Descriptions.Item>}
           </Descriptions>
         </Card>

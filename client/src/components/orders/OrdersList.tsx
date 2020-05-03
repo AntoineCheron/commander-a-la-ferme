@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from 'react'
-import { Button, Table, Tag, Typography } from 'antd'
+import { Button, Table, Typography } from 'antd'
 
-import { Order, OrderStatus, statusColor } from '../../models'
+import { Order, OrderStatus } from '../../models'
 import { useHistory } from 'react-router-dom'
+import StatusTag from './StatusTag'
 
 const { Text } = Typography
 
@@ -31,9 +32,7 @@ const OrdersList: FunctionComponent<OrdersListProps> = ({ orders }) => {
       title: 'Statut',
       key: 'status',
       dataIndex: 'status',
-      render: (status: OrderStatus) => (
-        <Tag color={statusColor[status]}>{status.toUpperCase()}</Tag>
-      ),
+      render: (status: OrderStatus) => <StatusTag status={status} />,
     },
     {
       title: 'Telephone',
