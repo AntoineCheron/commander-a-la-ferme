@@ -12,7 +12,7 @@ export default class FarmService {
     try {
       const query = {
         text: SQL_QUERIES.FIND_FARM_BY_NAME,
-        values: [PsqlUtils.toDbStr(farmName)]
+        values: [farmName]
       }
       const res = await this.pool.query(query)
       if (res.rowCount === 1) {
