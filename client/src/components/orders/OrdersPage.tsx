@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, useMemo, useState } from 'react'
 import { Route, Switch, useHistory, Redirect } from 'react-router-dom'
-import { Radio, Row, Skeleton, Typography } from 'antd'
+import { Radio, Row, Skeleton, Typography, Input, Col } from 'antd'
 
 import AppLayout from '../layout/AppLayout'
 import OrdersList from './OrdersList'
@@ -47,7 +47,9 @@ const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }>
   const history = useHistory()
   const orderService = useMemo(() => new OrderService(), [])
 
-  const filterOrders = (orders: Order[]) => orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
+  const [search, setSearch] = useState<string>('')
+
+  const filterOrdersByStatus = (orders: Order[]) => orders.filter(order => statusFilter === undefined || statusFilter.includes(order.status))
 
   const handleModeChange = (e: RadioChangeEvent) => {
     const targetUrl = e.target.value === 'new' ? '/app/commandes/nouvelles'
@@ -58,19 +60,32 @@ const Orders: FunctionComponent<{ statusFilter?: string[], activeKey?: string }>
   }
 
   return <>
-    <Radio.Group onChange={handleModeChange} value={activeKey} style={{ marginBottom: 8 }}>
-      <Radio.Button value="new">Nouvelles</Radio.Button>
-      <Radio.Button value="todo">A préparer</Radio.Button>
-      <Radio.Button value="done">Terminées</Radio.Button>
-      <Radio.Button value="all">Toutes</Radio.Button>
-    </Radio.Group>
+    <Row>
+      <Col span={8}>
+        <Radio.Group onChange={handleModeChange} value={activeKey} style={{ marginBottom: 8 }}>
+          <Radio.Button value="new">Nouvelles</Radio.Button>
+          <Radio.Button value="todo">A préparer</Radio.Button>
+          <Radio.Button value="done">Terminées</Radio.Button>
+          <Radio.Button value="all">Toutes</Radio.Button>
+        </Radio.Group>
+      </Col>
+
+      <Col span={16}>
+        <Input.Search
+          placeholder="Rechercher une commande, par nom de client, téléphone ou adresse."
+          onChange={e => setSearch(e.target.value)}
+          onSearch={setSearch}
+          style={{ width: '100%' }}
+        />
+      </Col>
+    </Row>
 
     <Fetch
       fct={() => orderService.getAll()}
       errorTitle="Oups, nous n'arrivons pas à récupérer vos commandes"
       loading={() => <Skeleton active />}
     >
-      {orders => <OrdersList orders={filterOrders(orders)} />}
+      {orders => <OrdersList orders={filterOrdersByStatus(orders)} search={search} />}
     </Fetch>
   </>
 }

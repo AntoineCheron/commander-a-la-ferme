@@ -21,7 +21,7 @@ const UpdateStatusModal: React.FC<Props> = ({ orderId, initialValue, onSuccess }
     }
   }
 
-  return <BaseActionModal f={save} title="Mettre à jour le statut" callback={onSuccess}>
+  return <BaseActionModal f={save} title="Mettre à jour le statut" callback={onSuccess} closable={true}>
     <Radio.Group onChange={e => setStatus(e.target.value)} value={status}>
       {ORDER_STATUS.map(status =>
         <Radio key={status} style={radioStyle} value={status}>
