@@ -14,6 +14,7 @@ import InventoryService from './inventory-service'
 
 import bcrypt from 'bcryptjs'
 import { PsqlUtils } from '../utils'
+import Database from './database-service'
 
 type BearerToken = string
 
@@ -120,8 +121,7 @@ export default class AuthenticationService {
 
     if (res.rowCount === 1) {
       const updatedUser = new User(user.id, user.username, farmName)
-      await InventoryService.createTables(farmName, this.pool)
-      await OrderService.createTables(farmName, this.pool)
+      await Database.createFarmDedicatedTables(this.pool, farmName)
 
       const token = this.generateToken(updatedUser)
       return { token, user: updatedUser }

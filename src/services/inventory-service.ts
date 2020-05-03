@@ -88,21 +88,6 @@ export default class InventoryService {
       throw error
     }
   }
-
-  public static async createTables (
-    farmName: string,
-    pool: Pool
-  ): Promise<void> {
-    await pool.query(
-      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(farmName)}_inventory ( 
-        id VARCHAR(255) PRIMARY KEY, 
-        title VARCHAR(255) NOT NULL,
-        category VARCHAR(100) NOT NULL,
-        price NUMERIC(7,2) NOT NULL,
-        remaining INTEGER NOT NULL
-      ); `
-    )
-  }
 }
 
 function ADD_ITEM_QUERY (farmName: string) {
@@ -112,9 +97,9 @@ function ADD_ITEM_QUERY (farmName: string) {
 }
 
 function GET_INVENTORY_QUERY (farmName: string) {
-  return `SELECT id, title, category, price, remaining FROM ${PsqlUtils.toDbStr(
+  return `SELECT id, title, category, price, remaining, ordered FROM ${PsqlUtils.toDbStr(
     farmName
-  )}_inventory;`
+  )}_inventory_view;`
 }
 
 function UPDATE_ITEM_QUERY (farmName: string) {

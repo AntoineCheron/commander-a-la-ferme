@@ -122,39 +122,6 @@ export default class OrderService {
       throw error
     }
   }
-
-  public static async createTables (farmName: string, pool: Pool) {
-    await pool.query(
-      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(farmName)}_orders ( 
-        id SERIAL PRIMARY KEY,  
-        fullname VARCHAR(40) NOT NULL, 
-        telephone VARCHAR(30) NOT NULL, 
-        address VARCHAR(100), 
-        paymentMethod VARCHAR(30) NOT NULL, 
-        status VARCHAR(30) DEFAULT 'new', 
-        passedOn DATE DEFAULT CURRENT_DATE,
-        customerComment VARCHAR(1000)
-      ); `
-    )
-
-    await pool.query(
-      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(
-        farmName
-      )}_ordered_items ( 
-        id VARCHAR(255) REFERENCES ${PsqlUtils.toDbStr(
-          farmName
-        )}_inventory(id), 
-        order_id INTEGER NOT NULL REFERENCES ${PsqlUtils.toDbStr(
-          farmName
-        )}_orders(id),
-        title VARCHAR(255) NOT NULL, 
-        category VARCHAR(100), 
-        price NUMERIC(7,2) NOT NULL, 
-        amount INTEGER NOT NULL, 
-        PRIMARY KEY(id, order_id)
-      ); `
-    )
-  }
 }
 
 function LIST_ORDERS_QUERY (farmName: string) {

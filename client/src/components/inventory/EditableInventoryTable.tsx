@@ -66,14 +66,14 @@ const EditableInventoryTable: FunctionComponent<InventoryProps> = ({ items, edit
         const editable = isEditing(record)
         return editable ? (
           <span>
-            <Button icon={<SaveOutlined />} type="dashed" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
+            <Button icon={<SaveOutlined />} type="dashed" onClick={() => save(record.id)} style={{ marginBottom: 8, marginRight: 8 }}>
               Enregistrer
             </Button>
 
             <Button type="dashed" onClick={cancel} danger>Annuler</Button>
           </span>
         ) : (
-            <Button icon={<EditOutlined />} type="dashed" onClick={() => edit(record)} style={{ marginRight: 8 }}>
+            <Button icon={<EditOutlined />} type="dashed" onClick={() => edit(record)} style={{ marginBottom: 8, marginRight: 8 }}>
               Modifier
             </Button>
           )

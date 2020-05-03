@@ -1,5 +1,6 @@
 import pg from 'pg'
 import { ENV } from '../config'
+import { PsqlUtils } from '../utils'
 
 function getDbConfig () {
   if (ENV === 'dev') {
@@ -53,6 +54,63 @@ class Database {
     );`
 
     this.createTable(farmsCreateQuery)
+  }
+
+  public static async createFarmDedicatedTables (
+    pool: pg.Pool,
+    farmName: string
+  ): Promise<void> {
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(farmName)}_inventory ( 
+        id VARCHAR(255) PRIMARY KEY, 
+        title VARCHAR(255) NOT NULL,
+        category VARCHAR(100) NOT NULL,
+        price NUMERIC(7,2) NOT NULL,
+        remaining INTEGER NOT NULL
+      ); `
+    )
+
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(farmName)}_orders ( 
+        id SERIAL PRIMARY KEY,  
+        fullname VARCHAR(40) NOT NULL, 
+        telephone VARCHAR(30) NOT NULL, 
+        address VARCHAR(100), 
+        paymentMethod VARCHAR(30) NOT NULL, 
+        status VARCHAR(30) DEFAULT 'new', 
+        passedOn DATE DEFAULT CURRENT_DATE,
+        customerComment VARCHAR(1000)
+      ); `
+    )
+
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS ${PsqlUtils.toDbStr(
+        farmName
+      )}_ordered_items ( 
+        id VARCHAR(255) REFERENCES ${PsqlUtils.toDbStr(
+          farmName
+        )}_inventory(id), 
+        order_id INTEGER NOT NULL REFERENCES ${PsqlUtils.toDbStr(
+          farmName
+        )}_orders(id),
+        title VARCHAR(255) NOT NULL, 
+        category VARCHAR(100), 
+        price NUMERIC(7,2) NOT NULL, 
+        amount INTEGER NOT NULL, 
+        PRIMARY KEY(id, order_id)
+      ); `
+    )
+
+    await pool.query(
+      `CREATE VIEW ${PsqlUtils.toDbStr(farmName)}_inventory_view AS
+          SELECT inventory.*,
+          ( SELECT sum(item.amount) 
+            FROM ${PsqlUtils.toDbStr(farmName)}_ordered_items item
+            WHERE item.id = inventory.id
+          ) as ordered
+          FROM ${PsqlUtils.toDbStr(farmName)}_inventory inventory
+      ;`
+    )
   }
 
   private createTable (query: string): void {

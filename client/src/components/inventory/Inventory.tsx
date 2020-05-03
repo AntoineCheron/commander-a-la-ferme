@@ -41,7 +41,7 @@ const CategoryInventory: FunctionComponent<InventoryProps & { category: string }
   return (<>
     <Title level={4}>{category}</Title>
     <EditableInventoryTable items={items} lastAddedItem={lastAddedItem} editItem={(key, item) => editItem(key, { ...item, category: category })} />
-    <Button type="dashed" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => setLastAddedItem(addItem(category))}>
+    <Button type="default" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => setLastAddedItem(addItem(category))}>
       Ajouter un produit
     </Button>
   </>)
