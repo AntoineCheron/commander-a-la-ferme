@@ -18,6 +18,6 @@ export class PsqlUtils {
   }
 
   public static toDbStr (str: string) {
-    return str.replace(' ', '_')
+    return str.replace(/ /g, '_')
   }
 }
