@@ -13,7 +13,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.4",
     "antd": "4.1.5",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "customize-cra": "^0.9.1",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
